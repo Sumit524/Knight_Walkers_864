@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import AvailableLocations from './components/location/AvailableLocations'
 
 function App() {
     const [message, setMessage] = useState('');
@@ -13,6 +14,7 @@ function App() {
     return (
         <div className="App">
             <h1>{message}</h1>
+            <AvailableLocations/>
         </div>
     );
 }
