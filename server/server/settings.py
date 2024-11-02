@@ -40,7 +40,23 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'corsheaders',
+    'channels',
+    'daphne',
+    'chatify',
 ]
+
+#ASGI configuration
+ASGI_APPLICATION = 'server.asgi.application'
+
+#Channels and Redis Configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND':'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
