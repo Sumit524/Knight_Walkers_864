@@ -7,6 +7,14 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
+channels-redis = "*"
+redis = "*"
+daphne = "*"
+channels = "==3.0.5"
+django-allauth = "*"
+requests = "*"
+pyjwt = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

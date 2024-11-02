@@ -6,8 +6,6 @@ import Home from "./pages/Home"
 import AuthPage from "./pages/AuthPage"
 import { useAuthentication } from "./auth"
 import RedirectGoogleAuth from "./components/GoogleRedirectHandler"
-import ChatRoom from "./components/chatRoom/ChatRoom"
-import AvailableLocations from './components/location/AvailableLocations'
 
 function App() {
 
@@ -30,10 +28,8 @@ function App() {
           <Route path="/register" element={<ProtectedRegister />}/>
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound/>} />
-          <Route path="/chatroom" element= {<ChatRoom />} />
         </Routes>
       </BrowserRouter>
-            <AvailableLocations/>
     </div>
   )
 }
