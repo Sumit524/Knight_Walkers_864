@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import './App.css'
+import ChatRoom from './components/chatRoom/ChatRoom';
 
 function App() {
     const [message, setMessage]= useState<string>('');
@@ -16,7 +17,7 @@ function App() {
 
   return (
     <>
-      
+      <ChatRoom />
     </>
   )
 }
