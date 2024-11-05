@@ -12,7 +12,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ initialMethod }) => {
         setMethod(initialMethod);
     }, [initialMethod]);
 
-    const route = method === 'login' ? '/api/token/' : '/api/user/register/';
+    const route = method === 'login' ? '/authentication/token/' : '/authentication/user/register/';
 
     return (
         <div>

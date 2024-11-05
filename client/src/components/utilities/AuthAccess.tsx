@@ -2,12 +2,15 @@ import React from "react";
 import { Navigate } from "react-router-dom";    
 import { useAuthentication } from "../auth/auth";    
 
+interface ProtectedRouteProps {
+    children: React.ReactNode; // Define the type for children
+}
 
-function ProtectedRoute({children}) {
-    const {isAuthorized} = useAuthentication();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+    const { isAuthorized } = useAuthentication();
 
     if (isAuthorized === null) {
-        return <div>Loading...........</div>
+        return <div>Loading...........</div>;
     }
 
     if (
@@ -17,7 +20,7 @@ function ProtectedRoute({children}) {
         return <Navigate to="/" />;
     }
 
-    return children;
-}
+    return <>{children}</>; // Wrap children in a fragment
+};
 
 export default ProtectedRoute;

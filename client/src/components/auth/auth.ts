@@ -46,7 +46,7 @@ export const useAuthentication = () => {
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
         try {
-            const res = await api.post('/api/token/refresh/', {
+            const res = await api.post('/authentication/token/refresh/', {
                 refresh: refreshToken,
             });
             if (res.status === 200) {
@@ -63,7 +63,7 @@ export const useAuthentication = () => {
 
     const validateGoogleToken = async (googleAccessToken: string): Promise<boolean> => {
         try {
-            const res = await api.post('/api/google/validate_token/', {
+            const res = await api.post('/authentication/google/validate_token/', {
                 access_token: googleAccessToken,
             }, {
                 headers: {

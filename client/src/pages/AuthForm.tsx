@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../components/auth/token";
 import "../styles/AuthForm.css";
-import google from "../assets/google.png";
+// import google from "../assets/google.png";
 
 interface AuthFormProps {
     route: string;
@@ -39,7 +39,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
                 }, 2000);
             }
         } catch (error:any) {
-            console.error(error);
+           
             if (error.response) {
                 if (error.response.status === 401) {
                     setError("Invalid credentials");
@@ -59,7 +59,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = "http://localhost:8000/accounts/google/login/";
+        window.location.href = "http://localhost:8000/authentication/accounts/google/login/";
     };
 
     return (
@@ -98,7 +98,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
                         {method === 'register' ? 'Register' : 'Login'}
                     </button>
                     <button type="button" className="google-button" onClick={handleGoogleLogin}>
-                        <img src={google} alt="Google icon" className="google-icon" />
+                        <img src={''} alt="Google icon" className="google-icon" />
                         {method === 'register' ? 'Register with Google' : 'Login with Google'}
                     </button>
                     {method === 'login' && (

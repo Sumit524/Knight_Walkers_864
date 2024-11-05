@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/github.jpg";
-import '../styles/Navbar.css';
+// import logo from "../assets/github.jpg";\
+import '../../styles/Navbar.css';
 import { useAuthentication } from "../auth/auth";
 
 const Navbar: React.FC = () => {
@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
     return (
         <div className="navbar">
             <Link to="/" className="navbar-logo-link">
-                <img src={logo} alt="Logo" className="navbar-logo"/>
+                <img src={''} alt="Logo" className="navbar-logo"/>
             </Link>
             <ul className="navbar-menu-left">
                 <li>
