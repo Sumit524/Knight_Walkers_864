@@ -1,26 +1,41 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios';
-import './App.css'
-import ChatRoom from './components/chatRoom/ChatRoom';
-import AvailableLocations from "./locations/AvailableLocations"
+import React from "react";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import Navbar from "./components/utilities/Navbar";
+import NotFound from "./pages/NotFound";
+import Home from "./pages/Home";
+import AuthPage from "./pages/AuthPage";
+import { useAuthentication } from "./components/auth/auth";
+import RedirectGoogleAuth from "./components/utilities/GoogleRedirectHandler";
+import ChatRoom from "./components/chatRoom/ChatRoom";
+import AvailableLocations from './locations/AvailableLocations';
 
-function App() {
-    const [message, setMessage]= useState<string>('');
-    useEffect(()=>{
-        axios.get('http://localhost:8000/api/hello/')
-        .then((response)=>{
-           console.log("response from server", response);
-        })
-        .catch((error)=>{
-          console.log("error ", error);
-        })
-    }, [])
+const App: React.FC = () => {
+  const { isAuthorized } = useAuthentication();
+
+  const ProtectedLogin: React.FC = () => {
+    return isAuthorized ? <Navigate to="/" /> : <AuthPage initialMethod="login" />;
+  };
+
+  const ProtectedRegister: React.FC = () => {
+    return isAuthorized ? <Navigate to="/" /> : <AuthPage initialMethod="register" />;
+  };
 
   return (
-    <>
-      <ChatRoom /><AvailableLocations/>
-    </>
-  )
-}
+    <div>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/login/callback" element={<RedirectGoogleAuth />} />
+          <Route path="/login" element={<ProtectedLogin />} />
+          <Route path="/register" element={<ProtectedRegister />} />
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/chatroom" element={<ChatRoom />} />
+        </Routes>
+      </BrowserRouter>
+      <AvailableLocations />
+    </div>
+  );
+};
 
-export default App
+export default App;
