@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import './App.css'
+import ChatRoom from './components/chatRoom/ChatRoom';
 import AvailableLocations from "./locations/AvailableLocations"
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
 
   return (
     <>
-      <AvailableLocations/>
+      <ChatRoom /><AvailableLocations/>
     </>
   )
 }
