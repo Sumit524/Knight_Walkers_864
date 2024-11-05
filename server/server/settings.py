@@ -12,8 +12,22 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+import environ
+import os
+
+from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialize environment variables
+env = environ.Env()
+
+# Explicitly read the .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# Retrieve the Google API Key
+GEOAPIFY_API_KEY = env("GEOAPIFY_API_KEY")
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'corsheaders',
+    'locations',
 ]
 
 MIDDLEWARE = [
