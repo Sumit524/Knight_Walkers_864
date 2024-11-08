@@ -27,10 +27,18 @@ const Navbar: React.FC = () => {
                 <li>
                     <Link to="/contact">Contact</Link>
                 </li>
+                <li>
+                    <Link to="/findMatch">Match</Link>
+                </li>
                 {isAuthorized && (
+                    <>
                     <li>
                         <Link to="/chatroom">ChatRoom</Link>
                     </li>
+                    <li>
+                        <Link to="/locations">Locations</Link>
+                    </li>
+                    </>
                 )}
             </ul>
             <ul className="navbar-menu-right">

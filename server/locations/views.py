@@ -50,3 +50,30 @@ def search_nearby_locations(request):
         })
 
     return JsonResponse(matching_locations, safe=False)
+
+# views.py
+
+# from django.contrib.gis.geos import Point
+# from django.shortcuts import render
+# from .models import UserLocation, Interest
+
+# def update_location(request):
+#     if request.method == 'POST':
+#         location_lat = request.POST.get('latitude')
+#         location_lon = request.POST.get('longitude')
+#         range_radius = request.POST.get('range_radius')
+
+#         location, created = UserLocation.objects.update_or_create(
+#             user=request.user,
+#             defaults={
+#                 'location': Point(float(location_lon), float(location_lat)),
+#                 'range_radius': int(range_radius),
+#             }
+#         )
+#         return render(request, 'location_updated.html')
+
+# def update_interest(request):
+#     if request.method == 'POST':
+#         interest_name = request.POST.get('interest')
+#         Interest.objects.update_or_create(user=request.user, interest_name=interest_name)
+#         return render(request, 'interest_updated.html')

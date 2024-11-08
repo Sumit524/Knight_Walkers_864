@@ -8,6 +8,7 @@ import { useAuthentication } from "./components/auth/auth";
 import RedirectGoogleAuth from "./components/utilities/GoogleRedirectHandler";
 import ChatRoom from "./components/chatRoom/ChatRoom";
 import AvailableLocations from './locations/AvailableLocations';
+import FindMatch from "./locations/FindMatch";
 
 const App: React.FC = () => {
   const { isAuthorized } = useAuthentication();
@@ -31,9 +32,11 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/chatroom" element={<ChatRoom />} />
+          <Route path="/locations" element={<AvailableLocations />} />
+          <Route path="/findMatch" element={<FindMatch/>}/>
         </Routes>
       </BrowserRouter>
-      <AvailableLocations />
+      
     </div>
   );
 };
