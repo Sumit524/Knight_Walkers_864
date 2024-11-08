@@ -1,36 +1,42 @@
-import React from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter, Route, Routes, Navigate, } from "react-router-dom";
 import Navbar from "./components/utilities/Navbar";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
-import AuthPage from "./pages/AuthPage";
-import { useAuthentication } from "./components/auth/auth";
-import RedirectGoogleAuth from "./components/utilities/GoogleRedirectHandler";
 import ChatRoom from "./components/chatRoom/ChatRoom";
 import AvailableLocations from './locations/AvailableLocations';
+import TodoHome from "./components/todo/TodoHome";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
+import Activate from "./pages/Activate";
+import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "./app/store";
+import { check_authenticated, load_user } from "./feature/auth/authActions";
 
 const App: React.FC = () => {
-  const { isAuthorized } = useAuthentication();
+  const auth = useSelector((state:RootState) => (state.auth))
+  const dispatch:AppDispatch = useDispatch();
 
-  const ProtectedLogin: React.FC = () => {
-    return isAuthorized ? <Navigate to="/" /> : <AuthPage initialMethod="login" />;
-  };
-
-  const ProtectedRegister: React.FC = () => {
-    return isAuthorized ? <Navigate to="/" /> : <AuthPage initialMethod="register" />;
-  };
+  useEffect(() => {
+    dispatch(check_authenticated());
+    dispatch(load_user())
+  }, [])
 
   return (
     <div>
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/login/callback" element={<RedirectGoogleAuth />} />
-          <Route path="/login" element={<ProtectedLogin />} />
-          <Route path="/register" element={<ProtectedRegister />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/login" element={auth.isAuthenticated? <Navigate to={'/'}/> : <Login />} />
+          <Route path="/signup" element={<Signup />}/>
+          <Route path="/" element={auth.isAuthenticated ? <Home />: <Navigate to={'/login'} />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/chatroom" element={<ChatRoom />} />
+          <Route path="/reset-password" element={<ResetPassword />}/>
+          <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />}/>
+          <Route path="/activate/:uid/:token" element={<Activate />}/>
         </Routes>
       </BrowserRouter>
       <AvailableLocations />

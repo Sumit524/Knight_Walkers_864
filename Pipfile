@@ -11,6 +11,8 @@ channels = "==3.0.5"
 channels-redis = "*"
 environ = "*"
 django-allauth = "*"
+django-environ = "*"
+djoser = "*"
 
 [dev-packages]
 

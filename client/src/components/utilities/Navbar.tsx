@@ -1,56 +1,95 @@
-import React from "react";
-import { Link } from "react-router-dom";
-// import logo from "../assets/github.jpg";\
-import '../../styles/Navbar.css';
-import { useAuthentication } from "../auth/auth";
+import React, { Fragment, ReactNode } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../feature/auth/authActions";
 
 const Navbar: React.FC = () => {
-    // Assuming `useAuthentication` returns an object with `isAuthorized` as a boolean and `logout` as a function.
-    const { isAuthorized, logout } = useAuthentication();
 
-    const handleLogout = () => {
-        logout();
+    const dispatch: AppDispatch = useDispatch();
+    const { isAuthenticated } = useSelector((state: RootState) => (state.auth));
+    const navigate= useNavigate();
+
+    const logout_user = ():void => {
+        dispatch(logout());
+        navigate('/');
     }
 
+    const guestLinks = (): ReactNode => (
+        <Fragment>
+            <li className="nav-item">
+                <Link className="text-gray-700 hover:text-blue-600" to="/login">
+                    Login
+                </Link>
+            </li>
+            <li className="nav-item">
+                <Link className="text-gray-700 hover:text-blue-600" to="/signup">
+                    Sign Up
+                </Link>
+            </li>
+        </Fragment>
+
+    )
+
+    const authLinks = (): ReactNode => (
+        <li className="nav-item">
+            <a
+                className="text-gray-700 hover:text-blue-600 cursor-pointer"
+                href="#!"
+                onClick={logout_user}
+            >
+                Logout
+            </a>
+        </li>
+
+    );
+
     return (
-        <div className="navbar">
-            <Link to="/" className="navbar-logo-link">
-                <img src={''} alt="Logo" className="navbar-logo"/>
-            </Link>
-            <ul className="navbar-menu-left">
-                <li>
-                    <Link to="/why">Why Us?</Link>
-                </li>
-                <li>
-                    <Link to="/about">About</Link>
-                </li>
-                <li>
-                    <Link to="/contact">Contact</Link>
-                </li>
-                {isAuthorized && (
-                    <li>
-                        <Link to="/chatroom">ChatRoom</Link>
-                    </li>
-                )}
-            </ul>
-            <ul className="navbar-menu-right">
-                {isAuthorized ? (
-                    <li>
-                        <Link onClick={handleLogout} to="/logout" className="button-link">Logout</Link>
-                    </li>
-                ) : (
-                    <>
-                        <li>
-                            <Link to="/login" className="button-link-login">Log In</Link>
-                        </li>
-                        <li>
-                            <Link to="/register" className="button-link">Register</Link>
-                        </li>
-                    </>
-                )}
-            </ul>
-        </div>
+
+        <Fragment>
+            <nav className="bg-gray-100 border-b border-gray-300 p-4">
+                <div className="container mx-auto flex justify-between items-center">
+                    <Link className="text-lg font-semibold text-gray-700" to="/">
+                        Auth System
+                    </Link>
+                    <button
+                        className="block lg:hidden p-2 text-gray-700 focus:outline-none focus:ring"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <svg
+                            className="w-6 h-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M4 5h16M4 12h16M4 19h16"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                    </button>
+                    <div className="hidden lg:flex lg:items-center lg:w-auto" id="navbarNav">
+                        <ul className="flex flex-col lg:flex-row lg:space-x-6">
+                            <li className="nav-item">
+                                <Link className="text-gray-700 hover:text-blue-600" to="/">
+                                    Home
+                                </Link>
+                            </li>
+                            {isAuthenticated ? authLinks() : guestLinks()}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </Fragment>
     );
 }
 
 export default Navbar;
+
+
