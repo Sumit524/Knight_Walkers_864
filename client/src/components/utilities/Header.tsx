@@ -6,10 +6,10 @@ import "../../styles/Header.css";
 const Header = () => {
     return (
         <header className="header">
-            <img src={''} alt="Background woman" className="header-bg" />
+            <img src={''} alt="Image" className="header-bg" />
             <div className="header-content">
                 <h1></h1>
-                <h3>Buy from us now!</h3>
+                <h3>Hii</h3>
                 <button>Start singing</button>
             </div>
            

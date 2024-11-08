@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'api',
     'corsheaders',
+    'userprofiledata',
     'chatify',
     'locations',
     'authentication',
@@ -77,7 +78,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware'
 ]
 
-SITE_ID =2
+SITE_ID =3
 #ASGI configuration
 ASGI_APPLICATION = 'server.asgi.application'
 
@@ -115,6 +116,10 @@ CHANNEL_LAYERS = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
 ]
+
+AUTH_USER_MODEL = 'authentication.CustomUser'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'  # Or whatever field you're using
+
 
 ROOT_URLCONF = 'server.urls'
 

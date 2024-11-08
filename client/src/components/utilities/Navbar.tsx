@@ -20,6 +20,8 @@ const Navbar: React.FC = () => {
             <ul className="navbar-menu-left">
                 <li>
                     <Link to="/why">Why Us?</Link>
+                    <Link to="/userdata">userdata?</Link>
+
                 </li>
                 <li>
                     <Link to="/about">About</Link>

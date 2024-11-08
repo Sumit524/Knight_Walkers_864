@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";    
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN, GOOGLE_ACCESS_TOKEN } from "./token";
 
@@ -15,8 +15,8 @@ export const useAuthentication = () => {
             const token = localStorage.getItem(ACCESS_TOKEN);
             const googleAccessToken = localStorage.getItem(GOOGLE_ACCESS_TOKEN);
 
-            console.log('ACCESS_TOKEN', token);
-            console.log('GOOGLE_ACCESS_TOKEN', googleAccessToken);
+            console.log('ACCESS_TOKEN:', token);
+            console.log('GOOGLE_ACCESS_TOKEN:', googleAccessToken);
 
             if (token) {
                 const decoded: DecodedToken = jwtDecode<DecodedToken>(token);
@@ -24,13 +24,16 @@ export const useAuthentication = () => {
                 const now = Date.now() / 1000;
 
                 if (tokenExpiration < now) {
+                    // Token is expired, try refreshing it
                     await refreshToken();
                 } else {
                     setIsAuthorized(true);
                 }
             } else if (googleAccessToken) {
+                // No JWT token, but Google token exists, validate it
                 const isGoogleTokenValid = await validateGoogleToken(googleAccessToken);
-                console.log("Google token is valid", isGoogleTokenValid);
+                console.log("Google token is valid:", isGoogleTokenValid);
+
                 if (isGoogleTokenValid) {
                     setIsAuthorized(true);
                 } else {
@@ -41,7 +44,7 @@ export const useAuthentication = () => {
             }
         };
         auth().catch(() => setIsAuthorized(false));
-    }, []); 
+    }, []);  // Empty dependency array to run this effect on mount only
 
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
@@ -56,7 +59,7 @@ export const useAuthentication = () => {
                 setIsAuthorized(false);
             }
         } catch (error) {
-            console.error('Error refreshing token', error);
+            console.error('Error refreshing token:', error);
             setIsAuthorized(false);
         }
     };
@@ -70,12 +73,12 @@ export const useAuthentication = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log("Validated response: ", res.data);
-            return res.data.valid;
+            console.log("Validated Google token response: ", res.data);
+            return res.data.valid;  // Assuming your backend sends a "valid" flag
         } catch (error) {
-            console.error('Error validating Google token', error);
+            console.error('Error validating Google token:', error);
             return false;
-        }  
+        }
     };
 
     const logout = () => {

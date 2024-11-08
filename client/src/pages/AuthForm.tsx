@@ -3,19 +3,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../components/auth/token";
 import "../styles/AuthForm.css";
-// import google from "../assets/google.png";
 
 interface AuthFormProps {
     route: string;
-    method: 'login' | 'register'; // Restricting method to either 'login' or 'register'
+    method: 'login' | 'register';
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
-    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null); // Corrected spelling of "success"
+    const [success, setSuccess] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -25,11 +24,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
         setSuccess(null);
 
         try {
-            const res = await api.post(route, { username, password });
-
+            const res = await api.post(route, { email, password });
+            console.log("dfsdfddssfd",res);
             if (method === 'login') {
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+                
                 navigate("/");
                 window.location.reload();
             } else {
@@ -38,13 +38,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
                     navigate("/login");
                 }, 2000);
             }
-        } catch (error:any) {
-           
+        } catch (error: any) {
             if (error.response) {
                 if (error.response.status === 401) {
                     setError("Invalid credentials");
                 } else if (error.response.status === 400) {
-                    setError("Username already exists");
+                    setError("Email already exists");
                 } else {
                     setError("Something went wrong. Please try again.");
                 }
@@ -73,19 +72,19 @@ const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
                 <form onSubmit={handleSubmit} className="form">
                     <h2>{method === 'register' ? 'Register' : 'Login'}</h2>
                     {error && <div className="error-message">{error}</div>}
-                    {success && <div className="success-message">{success}</div>} {/* Corrected spelling of "success" */}
+                    {success && <div className="success-message">{success}</div>}
                     <div className="form-group">
-                        <label htmlFor="username">Username:</label>
+                        <label htmlFor="email">Email:</label>
                         <input 
-                            type="text" 
-                            id="username" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
+                            type="email" 
+                            id="email" 
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)} 
                             required 
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password">Password:</label> {/* Fixed id from "username" to "password" */}
+                        <label htmlFor="password">Password:</label>
                         <input 
                             type="password" 
                             id="password" 
@@ -103,11 +102,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ route, method }) => {
                     </button>
                     {method === 'login' && (
                         <p className="toggle-text">Don't have an account? 
-                        <span className="toggle-link" onClick={() => navigate("/register")}>Register</span></p>
+                        <span className="toggle-link" onClick={() => navigate("/register")}> Register</span></p>
                     )}
                     {method === 'register' && (
                         <p className="toggle-text">Already have an account? 
-                        <span className="toggle-link" onClick={() => navigate("/login")}>Login</span></p>
+                        <span className="toggle-link" onClick={() => navigate("/login")}> Login</span></p>
                     )}
                 </form>
             )}
