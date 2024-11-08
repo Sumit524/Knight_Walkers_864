@@ -18,7 +18,7 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from chatify.routing import websocket_urlpatterns as chat_websocket_urlpatterns
-from locations.routing import websocket_urlpatterns as location_websocket_urlpatterns
+# from locations.routing import websocket_urlpatterns as location_websocket_urlpatterns
 
 # application = get_asgi_application()
 
@@ -28,7 +28,8 @@ application = ProtocolTypeRouter({
     'websocket': AuthMiddlewareStack(
         URLRouter(
             # chatify.routing.websocket_urlpatterns + locations.routing.websocket_urlpatterns
-            chat_websocket_urlpatterns + location_websocket_urlpatterns
+            chat_websocket_urlpatterns
+            # chat_websocket_urlpatterns + location_websocket_urlpatterns
             )
     ),
 })

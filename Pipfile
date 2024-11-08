@@ -10,12 +10,13 @@ channels = "==3.0.5"
 channels-redis = "*"
 environ = "*"
 django-allauth = "*"
+django-environ = "*"
 haversine = "*"
 django = "*"
 asgiref = "*"
-django-environ = "*"
 requests = "*"
 pyjwt = "*"
+djoser = "*"
 
 [dev-packages]
 
