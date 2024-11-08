@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
 
     const logout_user = ():void => {
         dispatch(logout());
-        navigate('/');
+        navigate('/login');
     }
 
     const guestLinks = (): ReactNode => (
@@ -33,20 +33,18 @@ const Navbar: React.FC = () => {
 
     const authLinks = (): ReactNode => (
         <li className="nav-item">
-            <a
+            <Link
                 className="text-gray-700 hover:text-blue-600 cursor-pointer mr-4"
-                href="#!"
-                onClick={() => navigate('/chatroom')}
-            >
-                Chat Room
-            </a>
-            <a
+                to = '/chatroom'
+            >Chat Room</Link>
+            <Link
                 className="text-gray-700 hover:text-blue-600 cursor-pointer"
-                href="#!"
-                onClick={logout_user}
-            >
-                Logout
-            </a>
+                to = '/logout'
+                onClick={(event) => {
+                    event.preventDefault();
+                    logout_user();
+                }}
+            >Logout</Link>
         </li>
 
     );

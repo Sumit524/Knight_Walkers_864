@@ -13,10 +13,10 @@ django-allauth = "*"
 django-environ = "*"
 haversine = "*"
 django = "*"
-asgiref = "*"
 requests = "*"
 pyjwt = "*"
 djoser = "*"
+asgiref = "*"
 
 [dev-packages]
 

@@ -1,13 +1,14 @@
-# from django.db import models
-# from django.contrib.auth.models import User
+from django.db import models
+from accounts.models import UserAccount
 
-# class UserLocation(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     latitude = models.FloatField()  # Store latitude
-#     longitude = models.FloatField()  # Store longitude
-#     range_radius = models.IntegerField(default=5000)  # in meters
+class UserInSocket(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    latitude = models.FloatField()  # Store latitude
+    longitude = models.FloatField()  # Store longitude
+    range_radius = models.IntegerField(default=5000)  # in meters
+    preference = models.CharField(max_length=50)
 
 # class Interest(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)    
 #     interest_name = models.CharField(max_length=100)  # e.g., "zoo"
 #     timestamp = models.DateTimeField(auto_now_add=True)
