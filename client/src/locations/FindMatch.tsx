@@ -1,5 +1,3 @@
-// FindMatch.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
@@ -12,42 +10,48 @@ interface User {
 }
 
 const FindMatch: React.FC = () => {
-    const user = useSelector((state:RootState) =>(state.auth.user));
+    const user = useSelector((state: RootState) => state.auth.user);
     const [users, setUsers] = useState<User[]>([]);
     const [socket, setSocket] = useState<WebSocket | null>(null);
-
-    const [messages, setMessages]= useState<string[]>([]);
+    const [message, setMessage] = useState<string>();
+    const [requestSentByUser, setRequestSentByUser] = useState<number | null>(null);
 
     useEffect(() => {
         if (user) {
             // Initialize WebSocket connection
-            console.log("user id type : : ", typeof(user.id))
             const ws = new WebSocket(`ws://localhost:8000/ws/match/${user.id}/`);
             setSocket(ws);
 
-            // On connection open, send initial message
             ws.onopen = () => {
                 ws.send(JSON.stringify({
-                    'id' : 1,
-                    'latitude' : 25.496330,
-                    'longitude' : 81.869049,
-                    'range_radius' : 5000,
-                    'preference' : 'zoo'
+                    action: 'send_connect',
+                    id: 1,
+                    latitude: 25.496330,
+                    longitude: 81.869049,
+                    range_radius: 5000,
+                    preference: 'zoo'
                 }));
             };
 
-
-            // On receiving a message from WebSocket
             ws.onmessage = (e: MessageEvent) => {
                 const data = JSON.parse(e.data);
                 if (data.action === 'nearby_users') {
-                    // setUsers(data.users);  // Update state with nearby users
-                    setMessages((prev) => [...prev, data.users]);
-                    console.log("Nearby Users:: ", data.users)
+                    setUsers((prevUsers) => [...prevUsers, ...data.users]);
                 }
+                if (data.action === 'user_disconnected') {
+                    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== data.user_id));
+                }
+                if (data.action === 'send_match_request') {
+                    setMessage(data.message);
+                    setRequestSentByUser(data.user_id);
+                }
+                if (data.action === 'send_match_response') {
+                    setMessage(data.message);
+                    setRequestSentByUser(data.user_id);
+                }
+                
             };
 
-            // Cleanup WebSocket connection when component unmounts
             return () => {
                 ws.close();
             };
@@ -63,16 +67,45 @@ const FindMatch: React.FC = () => {
         }
     };
 
+    const acceptConnectRequest = (userId : number) => {
+        if (socket) {
+            socket.send(JSON.stringify({
+                action : 'send_accept',
+                respond_to_user_id : userId,
+            }));
+        }
+    }
+
     return (
-        <div>
-            <h2>Nearby Users Interested in the Zoo</h2>
-            <ul id="user-list">
-                {messages.map(message => (
-                    // <li key={user.id}>
-                    //     {user.username} - {user.distance.toFixed(2)} meters away
-                    //     <button onClick={() => sendConnectRequest(user.id)}>Connect</button>
-                    // </li>
-                    <h1>{message}</h1>
+        <div className="bg-gray-100 min-h-screen flex flex-col items-center p-8">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Nearby Users Interested in the Zoo</h2>
+            <ul id="user-list" className="w-full max-w-md space-y-4">
+                {users.map(user => (
+                    <li key={user.id} className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
+                        <div>
+                            <p className="text-lg font-medium text-gray-900">{user.username}</p>
+                            <p className="text-sm text-gray-500">{user.distance.toFixed(2)} meters away</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <button 
+                                onClick={() => sendConnectRequest(user.id)}
+                                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow"
+                            >
+                                Connect
+                            </button>
+                        </div>
+                        {user.id === requestSentByUser && (
+                            <div className="mt-4 text-center w-full">
+                                <p className="text-green-600 font-semibold">{message}</p>
+                                <button 
+                                    className="mt-2 px-4 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg"
+                                    onClick={() => acceptConnectRequest(user.id)}
+                                >
+                                    Accept
+                                </button>
+                            </div>
+                        )}
+                    </li>
                 ))}
             </ul>
         </div>

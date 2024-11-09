@@ -39,7 +39,7 @@ const App: React.FC = () => {
           <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />}/>
           <Route path="/activate/:uid/:token" element={<Activate />}/>
           <Route path="/locations" element={<AvailableLocations />} />
-          <Route path="/findMatch" element={<FindMatch/>}/>
+          <Route path="/findMatch" element={auth.isAuthenticated ? <FindMatch />: <Navigate to={'/login'} />}/>
         </Routes>
       </BrowserRouter>
       
