@@ -130,9 +130,6 @@ const Navbar: React.FC = () => {
             <li className="text-white hover:text-gray-300">
                 <Link to="/chatroom">Chat Room</Link>
             </li>
-            <li className="text-white hover:text-gray-300">
-                <Link to="/findMatch">Find Match</Link>
-            </li>
             <li>
                 <button
                     onClick={(event) => {
@@ -169,7 +166,7 @@ const Navbar: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
                     </svg>
                 </button>
-                <div className={`${isOpen ? "block" : "hidden"} lg:flex lg:items-center w-full lg:w-auto`}>
+                <div className={`${isOpen ? "right-0 top-8 mt-2 w-full flex justify-end bg-blue-600 p-4" : "hidden"} lg:flex lg:items-center lg:static lg:w-auto`}>
                     <ul className="flex flex-col lg:flex-row lg:space-x-4 mt-4 lg:mt-0 space-y-2 lg:space-y-0">
                         <li className="text-white hover:text-gray-300">
                             <Link to="/">Home</Link>
@@ -183,3 +180,4 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
