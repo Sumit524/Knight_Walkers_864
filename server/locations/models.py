@@ -7,6 +7,7 @@ class UserInSocket(models.Model):
     longitude = models.FloatField()  # Store longitude
     range_radius = models.IntegerField(default=5000)  # in meters
     preference = models.CharField(max_length=50)
+    is_available= models.BooleanField(default=True)
 
 # class Interest(models.Model):
 #     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)    

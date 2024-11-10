@@ -2,19 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 
-// Define the user type
+// Define the user and message types
 interface User {
     id: number;
     username: string;
     distance: number;
 }
 
+interface MessageType {
+    [key: number]: string;
+}
+
 const FindMatch: React.FC = () => {
     const user = useSelector((state: RootState) => state.auth.user);
     const [users, setUsers] = useState<User[]>([]);
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [message, setMessage] = useState<string>();
-    const [requestSentByUser, setRequestSentByUser] = useState<number | null>(null);
+    const [requestSentByUser, setRequestSentByUser] = useState<number[]>([]);
+    const [messages, setMessages] = useState<MessageType>({});
 
     useEffect(() => {
         if (user) {
@@ -41,15 +45,14 @@ const FindMatch: React.FC = () => {
                 if (data.action === 'user_disconnected') {
                     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== data.user_id));
                 }
-                if (data.action === 'send_match_request') {
-                    setMessage(data.message);
-                    setRequestSentByUser(data.user_id);
+                if (data.action === 'send_match_request' || data.action === 'send_match_response' || data.action === 'send_error') {
+                    setMessages((prevMessages) => ({
+                        ...prevMessages,
+                        [data.user_id]: data.message
+                    }));
+                    setRequestSentByUser((prevValue) => [...prevValue, data.user_id]);
                 }
-                if (data.action === 'send_match_response') {
-                    setMessage(data.message);
-                    setRequestSentByUser(data.user_id);
-                }
-                
+
             };
 
             return () => {
@@ -67,14 +70,14 @@ const FindMatch: React.FC = () => {
         }
     };
 
-    const acceptConnectRequest = (userId : number) => {
+    const acceptConnectRequest = (userId: number) => {
         if (socket) {
             socket.send(JSON.stringify({
-                action : 'send_accept',
-                respond_to_user_id : userId,
+                action: 'send_accept',
+                respond_to_user_id: userId,
             }));
         }
-    }
+    };
 
     return (
         <div className="bg-gray-100 min-h-screen flex flex-col items-center p-8">
@@ -94,9 +97,9 @@ const FindMatch: React.FC = () => {
                                 Connect
                             </button>
                         </div>
-                        {user.id === requestSentByUser && (
+                        {requestSentByUser.includes(user.id) && (
                             <div className="mt-4 text-center w-full">
-                                <p className="text-green-600 font-semibold">{message}</p>
+                                <p className="text-green-600 font-semibold">{messages[user.id]}</p>
                                 <button 
                                     className="mt-2 px-4 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg"
                                     onClick={() => acceptConnectRequest(user.id)}

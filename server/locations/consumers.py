@@ -81,18 +81,72 @@ class MatchConsumer(AsyncWebsocketConsumer):
             from_id = self.id
             to_id = data.get('user_id')
             message= "Would you like to hang out with me"
-             
-            await self.send_direct_message(to_id, message, action)
-
+            
+            is_available_receiver= await self.check_user_availability(to_id)
+            is_available_sender= await self.check_user_availability(from_id)
+            if(is_available_receiver and is_available_sender):
+                await self.send_direct_message(to_id, message, action)
+            else:
+                if(not is_available_sender):
+                    message= "You are already matched"
+                else:
+                    message= "The user is no longer available for a match."
+                await self.send(text_data=json.dumps({
+                    'action': 'send_match_response',
+                    'message': message,
+                    'user_id': to_id
+                }))
             #verify if to_id is in UserInSocket (not then user left error) (if yes, then send a request)
 
         if action == 'send_accept':
             respond_to_user_id = data.get('respond_to_user_id')
-            message = "Request accepted, it's a match"
+            message_to_receiver = "Request accepted, it's a match"
+            message_to_sender = 'You have been matched'
+            
+            is_available_receiver= await self.check_user_availability(respond_to_user_id)
+            is_available_sender= await self.check_user_availability(self.id)
 
-            await self.send_direct_message(respond_to_user_id, message, action)
+            if(is_available_receiver and is_available_sender):
+                #make is_available false for both
+                await self.block_is_available(self.id, respond_to_user_id)
+                await self.send_direct_message(respond_to_user_id, message_to_receiver, action)
+                
+                #emitting self that its a match
 
+                await self.send(text_data=json.dumps({
+                    'action': 'send_match_response',
+                    'message': message_to_sender,
+                    'user_id': respond_to_user_id
+                }))
+            
+            else:
 
+                error_message =""
+                if(not is_available_sender):
+                    error_message= "You are already matched"
+                else:
+                    error_message= "The user is no longer available for a match."
+                await self.send(text_data=json.dumps({
+                    'action': 'send_match_response',
+                    'message': error_message,
+                    'user_id': respond_to_user_id
+                }))
+
+    @database_sync_to_async
+    def block_is_available(self, from_user_id, to_user_id):
+        try:
+            from_user = UserInSocket.objects.get(user__id = from_user_id)
+            to_user = UserInSocket.objects.get(user__id = to_user_id)
+
+            from_user.is_available = False
+            to_user.is_available = False
+
+            from_user.save()
+            to_user.save()
+
+        except UserInSocket.DoesNotExist:
+            return
+        
     @database_sync_to_async
     def save_user_data(self, user_id, latitude, longitude, range_radius, preference):
         from accounts.models import UserAccount
@@ -201,6 +255,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
 
         if (action == 'send_accept'):
             type = 'send_match_response'
+
         
         await self.channel_layer.group_send(
             target_user_group,
@@ -219,6 +274,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
         sender_user_id= event['sender_user_id']
         type = event['type']
         # Send the message to the WebSocket
+        
         await self.send(text_data=json.dumps({
             'action': type,
             'message': message,
@@ -236,3 +292,12 @@ class MatchConsumer(AsyncWebsocketConsumer):
             'message': message,
             'user_id': sender_user_id
         }))
+
+    @database_sync_to_async
+    def check_user_availability(self, user_id):
+        """Check if a user is available for matching based on isAvailable field."""
+        try:
+            user_in_socket = UserInSocket.objects.get(user__id=user_id)
+            return user_in_socket.is_available
+        except UserInSocket.DoesNotExist:
+            return False
