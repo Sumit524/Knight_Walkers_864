@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'djoser',
      'rest_framework_simplejwt',
+       'multiselectfield',
 ]
 
 MIDDLEWARE = [

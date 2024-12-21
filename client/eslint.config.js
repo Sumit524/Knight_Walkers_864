@@ -24,5 +24,11 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
     },
+
+    server: {
+      watch: {
+        usePolling: true, // Enable polling mode for file watching
+      },
+    },
   },
 )

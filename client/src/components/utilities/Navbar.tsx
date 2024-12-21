@@ -37,6 +37,8 @@ const Navbar: React.FC = () => {
             <li className="text-white hover:text-gray-300">
                 <Link to="/createprofile">Create Profile</Link>
             </li>
+
+          
             <li>
                 <button
                     onClick={(event) => {

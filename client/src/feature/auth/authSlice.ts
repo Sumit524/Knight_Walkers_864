@@ -1,10 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CreateProfile } from './authActions';
+import { CreateProfile,saveUserData } from './authActions';
+import { UserPreferencesInterface } from "./types";
 interface User {
     id: string;
     username: string;
     email: string;
+    
 }
+
+
+
 
 interface UserProfile {
     email: string;
@@ -24,8 +29,10 @@ interface AuthState {
     isAuthenticated: boolean | null;
     user: User | null;
     profile: UserProfile | null; 
+    preferences:UserPreferencesInterface |null,
     loading: boolean;
     error: string | null;
+    success:boolean
 }
 
 const initialState: AuthState = {
@@ -34,8 +41,10 @@ const initialState: AuthState = {
     isAuthenticated: null,
     user: null,
     profile: null,
+    preferences:null,
     loading: false,
     error: null,
+    success:false
 }
 
 
@@ -43,6 +52,11 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        resetState: (state) => {
+            state.loading = false;
+            state.error = null;
+            state.success = false;
+          },
         LOGIN_SUCCESS: (state, action: PayloadAction<{ access: string; refresh: string; }>) => {
             const { access, refresh } = action.payload;
 
@@ -69,6 +83,16 @@ export const authSlice = createSlice({
         profileLoadedFailed(state) {
             state.profile = null;
         },
+        preferencesLoadedFailed(state){
+            state.preferences =null;
+        },
+
+        preferencesLoadedSuccess(state,action:PayloadAction<UserPreferencesInterface>){
+            state.preferences =action.payload;
+        },
+        
+
+
         LOGIN_FAIL: (state) => {
             localStorage.removeItem('access');
             localStorage.removeItem('refresh');
@@ -157,10 +181,24 @@ export const authSlice = createSlice({
             .addCase(CreateProfile.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Failed to create profile';
-            });
+            })
+            .addCase(saveUserData.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+              })
+              .addCase(saveUserData.fulfilled, (state) => {
+                state.loading = false;
+                state.success = true;
+              })
+              .addCase(saveUserData.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.loading = false;
+                state.error = action.payload || 'An unknown error occurred';
+              });
+          
     },
 })
 
 export const { LOGIN_SUCCESS, LOGIN_FAIL,     profileLoadedSuccess,
-    profileLoadedFailed,SIGNUP_SUCCESS, SIGNUP_FAIL,PROFILE_SUCCESS, PROFILE_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL, USER_LOADED_FAILED, USER_LOADED_SUCCESS, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, PASSWORD_RESET_FAIL, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS,LOGOUT } = authSlice.actions;
+    resetState, profileLoadedFailed,SIGNUP_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess, SIGNUP_FAIL,PROFILE_SUCCESS, PROFILE_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL, USER_LOADED_FAILED, USER_LOADED_SUCCESS, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, PASSWORD_RESET_FAIL, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS,LOGOUT } = authSlice.actions;
 export default authSlice.reducer;

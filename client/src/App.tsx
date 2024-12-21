@@ -16,6 +16,9 @@ import { AppDispatch, RootState } from "./app/store";
 import { check_authenticated, load_user } from "./feature/auth/authActions";
 import FindMatch from "./locations/FindMatch";
 import CreateProfile from "./pages/CreateProfile";
+
+
+
 const App: React.FC = () => {
   const auth = useSelector((state:RootState) => (state.auth))
   const dispatch:AppDispatch = useDispatch();
@@ -40,7 +43,6 @@ const App: React.FC = () => {
           <Route path="/activate/:uid/:token" element={<Activate />}/>
           <Route path="/locations" element={<AvailableLocations />} />
           <Route path="/createprofile" element={<CreateProfile/>} />
-
           <Route path="/findMatch" element={auth.isAuthenticated ? <FindMatch />: <Navigate to={'/login'} />}/>
         </Routes>
       </BrowserRouter>

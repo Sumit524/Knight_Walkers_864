@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, {AxiosResponse} from 'axios';
-import { LOGIN_SUCCESS,profileLoadedSuccess,profileLoadedFailed, PROFILE_SUCCESS,PROFILE_FAIL,LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAILED, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, LOGOUT, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, SIGNUP_SUCCESS, SIGNUP_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL} from "./authSlice";
+import { LOGIN_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess,profileLoadedSuccess,profileLoadedFailed, PROFILE_SUCCESS,PROFILE_FAIL,LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAILED, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, LOGOUT, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, SIGNUP_SUCCESS, SIGNUP_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL} from "./authSlice";
 import { api_url } from "../../config/config";
 
 interface LoginPayload {
@@ -23,6 +23,7 @@ interface User {
    id: string;
    email: string;
    username: string;
+   
 }
 
 interface Reset_Password_Confirm_Type{
@@ -308,6 +309,9 @@ interface CreateProfilePayload{
     
 }
 
+
+
+
 export const CreateProfile = createAsyncThunk(
     'auth/createprofile',
     async ({ email, about, address, dob, contact, first_name, last_name, gender }: CreateProfilePayload, { dispatch }) => {
@@ -383,6 +387,7 @@ export const UpdateProfile = createAsyncThunk(
 
       const response = await axios.put(`${api_url}/accounts/userinfo/${profileData.id}/`, profileData, config);
       
+
       // Return the updated profile data on success
       return response.data;
     } catch (error: unknown) {
@@ -410,3 +415,152 @@ export const UpdateProfile = createAsyncThunk(
     }
   }
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { UserPreferencesInterface } from './types';
+interface UserData {
+    [key: string]: string[]; // Example: { "Food": ["Non-Veg2356", "Veg"], "Park": ["Flower3232211111114"] }
+  }
+
+
+  
+  // Async thunk for posting user data
+  export const saveUserData = createAsyncThunk<
+    void, // Return type
+    UserData, // Argument type
+    { rejectValue: string } // Reject value type
+  >(
+    'user/saveUserData',
+    async (userData, { rejectWithValue }) => {
+      const accessToken = localStorage.getItem('access');
+      if (!accessToken) {
+        return rejectWithValue('Access token is missing.');
+      }
+  
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `JWT ${accessToken}`,
+          'Accept': 'application/json',
+        },
+      };
+  
+      // Transform the data to match the backend's expected format
+      const transformedData = {
+        selectedCategories: userData, // Wrap the entire userData object under "selectedCategories"
+      };
+  
+      try {
+        console.log("Transformed Data: ", transformedData);
+        await axios.post(`${api_url}/accounts/preferences/`, transformedData, config);
+      } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+    }
+  );
+
+
+  
+  export const UpdateUserPreferences = createAsyncThunk(
+    'auth/updateUserPreferences',
+    async ({ userid, preferences }: { userid: number, preferences: UserPreferencesInterface }, { rejectWithValue }) => {
+      try {
+        const accessToken = localStorage.getItem('access');
+        if (!accessToken) {
+          return rejectWithValue('Access token is missing.');
+        }
+  
+        // Configuring headers for the request
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `JWT ${accessToken}`,
+            'Accept': 'application/json',
+          },
+        };
+  
+        // Making PUT request to update user preferences
+        const response = await axios.put(
+          `${api_url}/accounts/preferences/${userid}/`,
+          preferences, // sending preferences in the body
+          config // configuring headers
+        );
+  
+        // Returning the response data
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          // Logging error details
+          console.error('Axios error response:', error.response);
+          console.error('Error status:', error.response?.status);
+          console.error('Error message:', error.message);
+  
+          // Extracting a meaningful error message
+          const errorMessage =
+            error.response?.data?.detail ||
+            error.response?.data ||
+            'An error occurred while updating preferences.';
+  
+          // Rejecting with the extracted error message
+          return rejectWithValue(errorMessage);
+        }
+  
+        // Logging any unknown errors
+        console.error('Unknown error:', error);
+  
+        // Returning a generic error message for unknown errors
+        return rejectWithValue('An unexpected error occurred.');
+      }
+    }
+  );
+  
+
+
+
+
+
+
+
+
+export const Load_UserPreferences = createAsyncThunk(
+  'auth/loadUserPreferences',
+  async (userId: number, { dispatch, rejectWithValue }) => {
+
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+      dispatch(preferencesLoadedFailed());
+      return rejectWithValue('Access token is missing.');
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `JWT ${accessToken}`,
+        Accept: 'application/json',
+      },
+    };
+
+    try {
+      const response = await axios.get(`${api_url}/accounts/preferences/${userId}/`, config);
+      dispatch(preferencesLoadedSuccess(response.data)); // Dispatch success action with data
+      return response.data; // Return the response data for further processing
+    } catch (error: any) {
+      console.error('Error loading user preferences:', error);
+      dispatch(preferencesLoadedFailed()); // Dispatch failure action
+      return rejectWithValue(error.response?.data || 'Failed to load preferences.'); // Provide meaningful error message
+    }
+  }
+);
+

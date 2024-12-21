@@ -76,3 +76,33 @@ class UserInfo(models.Model):
      
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
+
+
+
+
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class OptionCategory(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+
+
+class Option(models.Model):
+    category = models.ForeignKey(OptionCategory, related_name='options', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+
+
+class UserPreference(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    selected_categories = models.JSONField()  # Store the selected categories with their options
+
+    def __str__(self):
+        return f"Options for {self.user.email}"
