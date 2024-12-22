@@ -1,6 +1,8 @@
 from rest_framework_simplejwt import views as jwt_views
 from django.urls import path
-from .views import UserInfoDetailsView, UserInfoListCreateView, SelectPreferenceCreateView,SelectPreferenceDetailsView
+from .views import UserInfoDetailsView, UserInfoListCreateView,UserProfileImageDetailView, SelectPreferenceCreateView,SelectPreferenceDetailsView,UserProfileImageView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # JWT token obtain and refresh endpoints
@@ -14,4 +16,9 @@ urlpatterns = [
 
     # URL for retrieving, updating, and deleting a specific preference
     path('preferences/<int:user_id>/', SelectPreferenceDetailsView.as_view(), name='preferences-detail-by-user'),
-]
+    #  path('profile/', UserProfileImageCreateView.as_view(), name='user-profile'),
+    #  path('profile/<int:pk>/', UserProfileImageDetailsView.as_view(), name='user-detail-profile'),
+       path('profileImage/', UserProfileImageView.as_view(), name='user-profile'),
+          path('profileImage/detail/', UserProfileImageDetailView.as_view(), name='user-profile-detail'),
+
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Select, { MultiValue } from 'react-select';
-
 import { useDispatch, useSelector } from "react-redux";
-import { load_user, load_user_profile, UpdateProfile,saveUserData, Load_UserPreferences } from "../feature/auth/authActions";
+import { load_user, load_user_profile, UpdateProfile,Load_UserPreferences } from "../feature/auth/authActions";
 import { AppDispatch, RootState } from "../app/store";
 import { CreateProfile } from "../feature/auth/authActions";
-import { UserPreferencesInterface } from '../feature/auth/types';
+
 
 interface ProfileForm {
   email: string;
@@ -32,9 +30,10 @@ interface UserProfile {
 }
 
 const CreateUserProfile: React.FC = () => {
+  
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const {preferences, loading, isAuthenticated, user, profile } = useSelector((state: RootState) => state.auth);
+  const { user, profile } = useSelector((state: RootState) => state.auth);
 
   const [filteredProfile, setFilteredProfile] = useState<UserProfile | null>(null);
   const [uemail, setUemail] = useState<string>("");
@@ -49,67 +48,9 @@ const CreateUserProfile: React.FC = () => {
     about: "",
   });
 
-      const [preferencesform, setPreferencesFormData] = useState<UserPreferencesInterface>({
-         preferences: {
-           music: [],
-           food: [],
-           vibe: [],
-         },
-       });
 
 
-  const [editing, setEditing] = useState(false); // State to toggle between edit and view modes
-  const [showpreferencesmodel, setShowPreferencesModel] = useState(false); // State to control modal visibility
-
-// Handle change for multi-select fields
-  const handlePreferenceSelectChange = (
-    field: keyof UserPreferencesInterface['preferences'],
-    selectedOptions: MultiValue<{ value: string; label: string }> | null
-  ) => {
-    setPreferencesFormData((prevData) => ({
-      ...prevData,
-      preferences: {
-        ...prevData.preferences,
-        [field]: selectedOptions ? selectedOptions.map((option) => option.value) : [],
-      },
-    }));
-  };
-
-
-
-   // Handle form submission
-    const handlePreferencesSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      dispatch(saveUserData(preferencesform));
-      setEditing(false); // Exit editing mode after saving
-      setShowPreferencesModel(false); // Close the modal after saving
-  
-      // Show a pop-up message and refresh the page
-      alert('Preferences updated successfully!');
-      window.location.reload();
-    };
-  
-
-
-    // Multi-select options
-  const musicOptions = [
-    { value: 'Jazz', label: 'Jazz' },
-    { value: 'Rock', label: 'Rock' },
-    { value: 'Pop', label: 'Pop' },
-  ];
-
-  const foodOptions = [
-    { value: 'Italian', label: 'Italian' },
-    { value: 'Mexican', label: 'Mexican' },
-    { value: 'Indian', label: 'Indian' },
-  ];
-
-  const vibeOptions = [
-    { value: 'Casual', label: 'Casual' },
-    { value: 'Romantic', label: 'Romantic' },
-    { value: 'Energetic', label: 'Energetic' },
-  ];
-
+   
 
   const id = user?.id;
   
@@ -119,34 +60,7 @@ const CreateUserProfile: React.FC = () => {
       }
     }, [dispatch, id]);
 
-    const formatPreferences = (preferences: any,showUpdateButton: boolean) => {
-      const { music, food, vibe } = preferences?.selected_categories?.preferences || {};
-      return (
-        <div className="mt-5">
-          <h3 className="font-bold text-lg">Saved Preferences:</h3>
-          <ul className="list-none p-0">
-            <li>
-              <strong>Music:</strong> {music?.length ? music.join(', ') : 'No preferences selected'}
-            </li>
-            <li>
-              <strong>Food:</strong> {food?.length ? food.join(', ') : 'No preferences selected'}
-            </li>
-            <li>
-              <strong>Vibe:</strong> {vibe?.length ? vibe.join(', ') : 'No preferences selected'}
-            </li>
-          </ul>
-          {showUpdateButton && (
-          <button
-            className="mt-3 px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={() => setShowPreferencesModel(true)}
-          >
-            Update Preferences
-          </button>
-        )}
-        </div>
-      );
-    };
-
+    
 
 
 
@@ -213,12 +127,17 @@ const CreateUserProfile: React.FC = () => {
 
 
   return (
-    <div className="h-screen  flex p-8 gap-10  bg-yellow-400 grid grid-cols-2 gap-4 w-full">
-    <div className=" bg-red-400 container  mx-auto  max-w-lg p-6  rounded-lg shadow-md">
+    
+    // <div className="h-full flex p-8 gap-10 bg-yellow-400 grid grid-cols-1 sm:grid-cols-2 gap-4"  style={{ backgroundImage: `url(${backgroundImage})` }}>
+
+
+
+      // <div className="flex justify-center items-center h-full pt-20 pl-2 pr-2 pb-20">
+     <div className="bg-yellow-200 container mx-auto max-w-lg p-6 rounded-lg  "  style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)' }}>
       {filteredProfile ? (
-        <div className="">
-          <h1 className="text-3xl font-bold text-center mb-4">User Profile</h1>
-          <ul className="space-y-2">
+        <div>
+          <h1 className=" text-3xl font-bold text-center mb-4  text-red-600 ">User Profile</h1>
+          <ul className="space-y-2 mb-6">
             <li><strong>Email:</strong> {filteredProfile.email}</li>
             <li><strong>ID:</strong> {filteredProfile.id}</li>
             <li><strong>First Name:</strong> {filteredProfile.first_name}</li>
@@ -231,182 +150,164 @@ const CreateUserProfile: React.FC = () => {
           </ul>
           <button
             onClick={() => setShowUpdateModal(true)}
-            className="w-full py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition"
+            className="p-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 transition"
           >
             Update Profile
           </button>
         </div>
       ) : (
         <div className="p-4 sm:p-8">
-        <h1 className="text-3xl font-bold text-center mb-6">Create Your Profile</h1>
-        <form 
-          onSubmit={handleSubmit} 
-          className="space-y-6 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-6"
-        >
-          {/* Email */}
-          <div className="relative col-span-2">
-            <input
-              type="email"
-              name="email"
-              value={uemail}
-              readOnly
-              placeholder=" "
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              Email
-            </label>
-          </div>
-      
-          {/* First Name */}
-          <div className="relative">
-            <input
-              type="text"
-              name="first_name"
-              value={profileData.first_name}
-              onChange={handleChange}
-              placeholder=" "
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              First Name
-            </label>
-          </div>
-      
-          {/* Last Name */}
-          <div className="relative">
-            <input
-              type="text"
-              name="last_name"
-              value={profileData.last_name}
-              onChange={handleChange}
-              placeholder=" "
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              Last Name
-            </label>
-          </div>
-      
-          {/* Age */}
-          <div className="relative">
-            <input
-              type="date"
-              name="dob"
-              value={profileData.dob}
-              onChange={handleChange}
-              placeholder=" "
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              dob
-            </label>
-          </div>
-      
-          {/* Gender */}
-          <div className="relative">
-            <select
-              name="gender"
-              value={profileData.gender}
-              onChange={handleChange}
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            >
-              <option value="" disabled></option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              Gender
-            </label>
-          </div>
-      
-          {/* Contact */}
-          <div className="relative">
-            <input
-              type="tel"
-              name="contact"
-              value={profileData.contact}
-              onChange={handleChange}
-              placeholder=" "
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              Contact
-            </label>
-          </div>
-      
-          {/* Address */}
-          <div className="relative col-span-2">
-            <input
-              type="text"
-              name="address"
-              value={profileData.address}
-              onChange={handleChange}
-              placeholder=" "
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              Address
-            </label>
-          </div>
-      
-          {/* About */}
-          <div className="relative col-span-2">
-            <textarea
-              name="about"
-              value={profileData.about}
-              onChange={handleChange}
-              placeholder=" "
-              // rows="4"
-              className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            ></textarea>
-            <label
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
-              About Yourself
-            </label>
-          </div>
-      
-          {/* Submit */}
-          <button
-            type="submit"
-            className="col-span-2 w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition"
+          <h1 className="text-3xl font-bold text-center mb-6 text-red-600">Create Your Profile</h1>
+          <form 
+            onSubmit={handleSubmit} 
+            className="space-y-6 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-6"
           >
-            Create Profile
-          </button>
-        </form>
-      </div>
-      
+            {/* Email */}
+            <div className="relative col-span-2">
+              <input
+                type="email"
+                name="email"
+                value={uemail}
+                readOnly
+                placeholder=" "
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                Email
+              </label>
+            </div>
+
+            {/* First Name */}
+            <div className="relative">
+              <input
+                type="text"
+                name="first_name"
+                value={profileData.first_name}
+                onChange={handleChange}
+                placeholder=" "
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                First Name
+              </label>
+            </div>
+
+            {/* Last Name */}
+            <div className="relative">
+              <input
+                type="text"
+                name="last_name"
+                value={profileData.last_name}
+                onChange={handleChange}
+                placeholder=" "
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                Last Name
+              </label>
+            </div>
+
+            {/* DOB */}
+            <div className="relative">
+              <input
+                type="date"
+                name="dob"
+                value={profileData.dob}
+                onChange={handleChange}
+                placeholder=" "
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                DOB
+              </label>
+            </div>
+
+            {/* Gender */}
+            <div className="relative">
+              <select
+                name="gender"
+                value={profileData.gender}
+                onChange={handleChange}
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              >
+                <option value="" disabled></option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                Gender
+              </label>
+            </div>
+
+            {/* Contact */}
+            <div className="relative">
+              <input
+                type="tel"
+                name="contact"
+                value={profileData.contact}
+                onChange={handleChange}
+                placeholder=" "
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                Contact
+              </label>
+            </div>
+
+            {/* Address */}
+            <div className="relative col-span-2">
+              <input
+                type="text"
+                name="address"
+                value={profileData.address}
+                onChange={handleChange}
+                placeholder=" "
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                Address
+              </label>
+            </div>
+
+            {/* About */}
+            <div className="relative col-span-2">
+              <textarea
+                name="about"
+                value={profileData.about}
+                onChange={handleChange}
+                placeholder=" "
+                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              ></textarea>
+              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                About Yourself
+              </label>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="p-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 transition"
+            >
+              Create Profile
+            </button>
+          </form>
+        </div>
       )}
 
       {/* Update Profile Modal */}
       {showUpdateModal && (
   <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Update Profile</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-center text-red-600">Update Profile</h2>
       <form onSubmit={handleUpdate} className="space-y-6">
         {/* First Name */}
         <div className="flex gap-6">
@@ -510,212 +411,35 @@ const CreateUserProfile: React.FC = () => {
         </div>
 
         {/* Submit and Cancel Buttons */}
+        <div className=" flex justify-between items-center">
         <button
           type="submit"
-          className="w-full py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition"
+          className="p-2 bg-yellow-500 text-white font-semibold rounded-md hover:bg-yellow-400 transition "
         >
           Update Profile
         </button>
         <button
           type="button"
           onClick={() => setShowUpdateModal(false)}
-          className="w-full py-2 mt-2 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600 transition"
+         className="px-2 py-2 bg-red-500 text-white rounded-md hover:bg-red-400 transition duration-200 ease-in-out"
         >
+
+
+
+
+          
           Cancel
         </button>
+        </div>
       </form>
+      
     </div>
   </div>
 )}
+</div>
 
-    </div>
+    // </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div className="p-4">
-      {preferences && !editing ? (
-        formatPreferences(preferences,true) // Show saved preferences with Update button
-      ) : (
-        <form onSubmit={handlePreferencesSubmit} className="space-y-4">
-          <h1 className="text-xl font-semibold">Select your preferences</h1>
-
-          <div>
-            <label htmlFor="music" className="block text-lg">Music Preferences:</label>
-            <Select
-              isMulti
-              id="music"
-              options={musicOptions}
-              onChange={(selected) => handlePreferenceSelectChange('music', selected)}
-              value={musicOptions.filter((option) =>
-                preferencesform.preferences.music.includes(option.value)
-              )}
-              className="mt-2"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="food" className="block text-lg">Food Preferences:</label>
-            <Select
-              isMulti
-              id="food"
-              options={foodOptions}
-              onChange={(selected) => handlePreferenceSelectChange('food', selected)}
-              value={foodOptions.filter((option) =>
-                preferencesform.preferences.food.includes(option.value)
-              )}
-              className="mt-2"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="vibe" className="block text-lg">Vibe Preferences:</label>
-            <Select
-              isMulti
-              id="vibe"
-              options={vibeOptions}
-              onChange={(selected) => handlePreferenceSelectChange('vibe', selected)}
-              value={vibeOptions.filter((option) =>
-                preferencesform.preferences.vibe.includes(option.value)
-              )}
-              className="mt-2"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-green-500 text-white rounded"
-            disabled={loading}
-          >
-            {loading ? 'Saving...' : 'Submit'}
-          </button>
-        </form>
-      )}
-
-      {/* Modal for updating preferences */}
-      {showpreferencesmodel && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-96">
-            <h2 className="text-xl font-semibold mb-4">Update Your Preferences</h2>
-           
-            {preferences && 
-        formatPreferences(preferences,false)  }
-           
-            <form onSubmit={handlePreferencesSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="music" className="block text-lg">Music Preferences:</label>
-                <Select
-                  isMulti
-                  id="music"
-                  options={musicOptions}
-                  onChange={(selected) => handlePreferenceSelectChange('music', selected)}
-                  value={musicOptions.filter((option) =>
-                    preferencesform.preferences.music.includes(option.value)
-                  )}
-                  className="mt-2"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="food" className="block text-lg">Food Preferences:</label>
-                <Select
-                  isMulti
-                  id="food"
-                  options={foodOptions}
-                  onChange={(selected) => handlePreferenceSelectChange('food', selected)}
-                  value={foodOptions.filter((option) =>
-                    preferencesform.preferences.food.includes(option.value)
-                  )}
-                  className="mt-2"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="vibe" className="block text-lg">Vibe Preferences:</label>
-                <Select
-                  isMulti
-                  id="vibe"
-                  options={vibeOptions}
-                  onChange={(selected) => handlePreferenceSelectChange('vibe', selected)}
-                  value={vibeOptions.filter((option) =>
-                    preferencesform.preferences.vibe.includes(option.value)
-                  )}
-                  className="mt-2"
-                />
-              </div>
-
-              <div className="flex justify-between">
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded"
-                  disabled={loading}
-                >
-                  {loading ? 'Saving...' : 'Update Preferences'}
-                </button>
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-red-500 text-white rounded"
-                  onClick={() => setShowPreferencesModel(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </div>
   );
 };
 

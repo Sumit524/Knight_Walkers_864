@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CreateProfile,saveUserData } from './authActions';
+import { CreateProfile,saveUserData ,uploadUserProfileImage,fetchUserProfileImage} from './authActions';
 import { UserPreferencesInterface } from "./types";
 interface User {
     id: string;
@@ -33,12 +33,16 @@ interface AuthState {
     loading: boolean;
     error: string | null;
     success:boolean
+    profileImage: string | null; // Or any other relevant property
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: AuthState = {
     access: localStorage.getItem('access'),
     refresh: localStorage.getItem('refresh'),
     isAuthenticated: null,
+    profileImage: null,
+    status: 'idle',
     user: null,
     profile: null,
     preferences:null,
@@ -90,6 +94,21 @@ export const authSlice = createSlice({
         preferencesLoadedSuccess(state,action:PayloadAction<UserPreferencesInterface>){
             state.preferences =action.payload;
         },
+
+
+
+
+        profileImageLoadedFailed(state) {
+            state.status = 'failed';
+      state.profileImage = null;
+      state.error = 'Failed to load profile image.';
+          },
+          profileIamgeLoadedSuccess(state, action: PayloadAction<string>) {
+            state.status = 'succeeded';
+      state.profileImage = action.payload;
+      state.error = null;
+          },
+        
         
 
 
@@ -194,11 +213,37 @@ export const authSlice = createSlice({
               .addCase(saveUserData.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;
                 state.error = action.payload || 'An unknown error occurred';
+              })
+
+
+              .addCase(uploadUserProfileImage.pending, (state) => {
+                state.status = 'loading';
+                state.error = null;
+              })
+              .addCase(uploadUserProfileImage.fulfilled, (state, action: PayloadAction<{ profile_image: string }>) => {
+                state.status = 'succeeded';
+                state.profileImage = action.payload.profile_image;
+                state.error = null;
+              })
+              .addCase(uploadUserProfileImage.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.status = 'failed';
+                state.error = action.payload || 'Failed to upload profile image.';
+              })
+              .addCase(fetchUserProfileImage.pending, (state) => {
+                state.status = 'loading';
+              })
+              .addCase(fetchUserProfileImage.fulfilled, (state, action: PayloadAction<{ profile_image: string | null }>) => {
+                state.status = 'succeeded';
+                state.profileImage = action.payload.profile_image;
+              })
+              .addCase(fetchUserProfileImage.rejected, (state, action: PayloadAction<any>) => {
+                state.status = 'failed';
+                state.error = action.payload;
               });
           
     },
 })
 
-export const { LOGIN_SUCCESS, LOGIN_FAIL,     profileLoadedSuccess,
+export const { LOGIN_SUCCESS, LOGIN_FAIL,     profileLoadedSuccess, profileIamgeLoadedSuccess,profileImageLoadedFailed,
     resetState, profileLoadedFailed,SIGNUP_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess, SIGNUP_FAIL,PROFILE_SUCCESS, PROFILE_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL, USER_LOADED_FAILED, USER_LOADED_SUCCESS, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, PASSWORD_RESET_FAIL, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS,LOGOUT } = authSlice.actions;
 export default authSlice.reducer;

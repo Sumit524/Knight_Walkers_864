@@ -85,3 +85,65 @@ class SelectPreferenceDetailsView(generics.RetrieveUpdateDestroyAPIView):
         # Retrieve the specific user based on user ID passed as a query parameter
         user_id = self.kwargs.get('user_id')  # Assuming 'user_id' is passed in the URL
         return get_object_or_404(UserPreference, user_id=user_id)
+    
+
+
+
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from .models import UserProfileImage
+from .serializers import UserProfileImageSerializer
+
+class UserProfileImageView(RetrieveUpdateAPIView):
+    queryset = UserProfileImage.objects.all()
+    serializer_class = UserProfileImageSerializer
+    permission_classes = [IsAuthenticated]
+
+    
+    def get_object(self):
+        # Ensure the profile is tied to the authenticated user
+        profile, created = UserProfileImage.objects.get_or_create(user=self.request.user)
+        return profile
+    
+    
+
+    def put(self, request, *args, **kwargs):
+        profile = self.get_object()
+        serializer = self.serializer_class(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+
+
+
+
+
+from rest_framework.views import APIView
+
+
+class UserProfileImageDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        profile, created = UserProfileImage.objects.get_or_create(user=request.user)
+        serializer = UserProfileImageSerializer(profile)
+        return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

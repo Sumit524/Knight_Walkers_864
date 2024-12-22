@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, {AxiosResponse} from 'axios';
-import { LOGIN_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess,profileLoadedSuccess,profileLoadedFailed, PROFILE_SUCCESS,PROFILE_FAIL,LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAILED, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, LOGOUT, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, SIGNUP_SUCCESS, SIGNUP_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL} from "./authSlice";
+import { LOGIN_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess,profileLoadedSuccess,profileLoadedFailed, PROFILE_SUCCESS,PROFILE_FAIL,LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAILED, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, LOGOUT, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, SIGNUP_SUCCESS, SIGNUP_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL,profileIamgeLoadedSuccess,profileImageLoadedFailed} from "./authSlice";
 import { api_url } from "../../config/config";
 
 interface LoginPayload {
@@ -563,4 +563,78 @@ export const Load_UserPreferences = createAsyncThunk(
     }
   }
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+interface UploadUserProfileImageResponse {
+  profile_image: string;
+}
+
+export const uploadUserProfileImage = createAsyncThunk<
+  UploadUserProfileImageResponse, // The resolved data type
+  FormData,                       // The argument passed to the thunk
+  { rejectValue: string }         // The type of the rejected value
+>(
+  'profile/uploadProfileImage',
+  async (formData: FormData, { rejectWithValue }) => {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+      return rejectWithValue('Access token is missing.');
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `JWT ${accessToken}`,
+      },
+    };
+
+    try {
+      const response = await axios.put(`${api_url}/accounts/profileImage/`, formData, config);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Something went wrong!');
+    }
+  }
+);
+
+
+export const fetchUserProfileImage = createAsyncThunk(
+  'profile/fetchProfileImage',
+  async (_, { rejectWithValue }) => {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+      return rejectWithValue('Access token is missing.');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+      },
+    };
+
+    try {
+      const response = await axios.get(`${api_url}/accounts/profileImage/detail/`, config);
+      return response.data;  // Ensure that the response data includes the profile_image_url
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Something went wrong!');
+    }
+  }
+);
+
+
+
 

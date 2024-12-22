@@ -15,9 +15,12 @@ const Home: React.FC = () => {
     }, [auth]);
     return (
         <>
-        <div>
+        
+        <div className="h-screen mt-5 px-2 py-2  bg-gray-900">
             <Header />
+
         </div>
+       
         </>
 
     );

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+from django.conf import settings
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -101,8 +101,18 @@ class Option(models.Model):
 
 
 class UserPreference(models.Model):
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     selected_categories = models.JSONField()  # Store the selected categories with their options
 
     def __str__(self):
-        return f"Options for {self.user.email}"
+        return f"Preferences for {self.user.email}"
+    
+
+
+
+class UserProfileImage(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.email}'s Profile"

@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import ChatRoom from "./components/chatRoom/ChatRoom";
 import AvailableLocations from './locations/AvailableLocations';
 import TodoHome from "./components/todo/TodoHome";
+import RegisterFirst from "./pages/RegisterFirst";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
@@ -17,7 +18,8 @@ import { check_authenticated, load_user } from "./feature/auth/authActions";
 import FindMatch from "./locations/FindMatch";
 import CreateProfile from "./pages/CreateProfile";
 
-
+import ProfileImage from "./pages/ProfileImage";
+import UserDetailsPage from "./pages/UserDetailsPage";
 
 const App: React.FC = () => {
   const auth = useSelector((state:RootState) => (state.auth))
@@ -35,15 +37,25 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={auth.isAuthenticated? <Navigate to={'/'}/> : <Login />} />
           <Route path="/signup" element={<Signup />}/>
-          <Route path="/" element={auth.isAuthenticated ? <Home />: <Navigate to={'/login'} />} />
-          <Route path="*" element={<NotFound />} />
+        
+          <Route path="/" element={<Home/>} />
+          {/* <Route path="/" element={auth.isAuthenticated ? <Home/>: <Navigate to={'/notauthenticated'} />} /> */}
+          <Route path="*" element={<NotFound/>} />
+          <Route path = '/notauthenticated' element={<RegisterFirst/>}/>
           <Route path="/chatroom" element={<ChatRoom />} />
           <Route path="/reset-password" element={<ResetPassword />}/>
           <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />}/>
           <Route path="/activate/:uid/:token" element={<Activate />}/>
           <Route path="/locations" element={<AvailableLocations />} />
           <Route path="/createprofile" element={<CreateProfile/>} />
-          <Route path="/findMatch" element={auth.isAuthenticated ? <FindMatch />: <Navigate to={'/login'} />}/>
+         
+          <Route path="/findMatch" element={auth.isAuthenticated ? <FindMatch />: <Navigate to={'/notauthenticated'} />}/>
+            <></>
+           
+          <Route path="/userdetails" element={< UserDetailsPage/>} />
+
+          <Route path="/profileImage" element={<ProfileImage/>} />
+          
         </Routes>
       </BrowserRouter>
       

@@ -5,7 +5,7 @@ const ChatRoom: React.FC = () => {
     const [roomName, setRoomName] = useState<string>('general');
     
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-800 text-white">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
             <h1 className="text-3xl font-bold mb-6">Chat Application</h1>
             <input 
                 type="text"

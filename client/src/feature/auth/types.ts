@@ -25,3 +25,12 @@ export interface Preferences {
     error: string | null;
     success: boolean;
   }
+
+
+
+  export interface ProfileStateInterface{
+    profileImage: string | null; // URL or path to the uploaded profile image
+    status: 'idle' | 'loading' | 'succeeded' | 'failed'; // Status of the current async operation
+    error: string | null; // Error message, if any
+  }
+  
