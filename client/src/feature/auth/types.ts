@@ -11,9 +11,8 @@ export interface Preferences {
  // In types.ts
  export interface UserPreferencesInterface  {
   preferences: {
-    music: string[];
-    food: string[];
-    vibe: string[];
+
+    accommodation :string[],activity  :string [],commercial  :string [],catering  :string [],entertainment :string [],healthcare :string [],tourism  :string [],sport :string [], public_transport :string []
   };
   // Add index signature for flexibility
   [key: string]: any; // This allows any string key to be present in the UserData type.

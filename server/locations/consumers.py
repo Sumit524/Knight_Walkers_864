@@ -105,7 +105,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
             
             is_available_receiver= await self.check_user_availability(respond_to_user_id)
             is_available_sender= await self.check_user_availability(self.id)
-
+            
             if(is_available_receiver and is_available_sender):
                 #make is_available false for both
                 await self.block_is_available(self.id, respond_to_user_id)
@@ -131,7 +131,7 @@ class MatchConsumer(AsyncWebsocketConsumer):
                     'message': error_message,
                     'user_id': respond_to_user_id
                 }))
-
+    
     @database_sync_to_async
     def block_is_available(self, from_user_id, to_user_id):
         try:

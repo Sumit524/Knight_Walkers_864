@@ -62,10 +62,12 @@ const CreateUserProfile: React.FC = () => {
 
     
 
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
   useEffect(() => {
     dispatch(load_user());
     dispatch(load_user_profile());
@@ -136,176 +138,210 @@ const CreateUserProfile: React.FC = () => {
      <div className="bg-yellow-200 container mx-auto max-w-lg p-6 rounded-lg  "  style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)' }}>
       {filteredProfile ? (
         <div>
-          <h1 className=" text-3xl font-bold text-center mb-4  text-red-600 ">User Profile</h1>
+          <h1 className=" text-2xl text-center mb-4  text-red-600 ">User Profile</h1>
           <ul className="space-y-2 mb-6">
-            <li><strong>Email:</strong> {filteredProfile.email}</li>
-            <li><strong>ID:</strong> {filteredProfile.id}</li>
-            <li><strong>First Name:</strong> {filteredProfile.first_name}</li>
-            <li><strong>Last Name:</strong> {filteredProfile.last_name}</li>
-            <li><strong>Gender:</strong> {filteredProfile.gender}</li>
-            <li><strong>Contact:</strong> {filteredProfile.contact}</li>
-            <li><strong>Date of Birth:</strong> {filteredProfile.dob}</li>
-            <li><strong>Address:</strong> {filteredProfile.address}</li>
-            <li><strong>About:</strong> {filteredProfile.about}</li>
+            <li> <strong className="text-red-700">Email:</strong> {filteredProfile.email}</li>
+            <li> <strong className="text-red-700">ID:</strong> {filteredProfile.id}</li>
+            <li> <strong className="text-red-700">First Name:</strong> {filteredProfile.first_name}</li>
+            <li> <strong className="text-red-700">Last Name:</strong> {filteredProfile.last_name}</li>
+            <li> <strong className="text-red-700">Gender:</strong> {filteredProfile.gender}</li>
+            <li> <strong className="text-red-700">Contact:</strong> {filteredProfile.contact}</li>
+            <li> <strong className="text-red-700">Date of Birth:</strong> {filteredProfile.dob}</li>
+            <li> <strong className="text-red-700">Address:</strong> {filteredProfile.address}</li>
+            <li> <strong className="text-red-700">About:</strong> {filteredProfile.about}</li>
           </ul>
           <button
             onClick={() => setShowUpdateModal(true)}
-            className="p-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 transition"
+            className="p-2 bg-green-600 text-black font-semibold rounded-md hover:bg-green-500 transition"
           >
             Update Profile
           </button>
         </div>
       ) : (
-        <div className="p-4 sm:p-8">
-          <h1 className="text-3xl font-bold text-center mb-6 text-red-600">Create Your Profile</h1>
-          <form 
-            onSubmit={handleSubmit} 
-            className="space-y-6 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-6"
+        <div>
+      {/* Button to open the modal */}
+      <div>
+      <h1 className="mb-2">Please create your profile. It will take just a minute.</h1>
+      <button
+        onClick={openModal}
+        className="p-2 bg-green-600 text-black font-semibold rounded-md hover:bg-green-500 transition"
+      >
+        Please create your profile
+      </button>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
+          onClick={closeModal} // Close modal if clicked outside
+        >
+          <div
+            className="bg-white p-8 rounded-md max-w-2xl w-full"
+            onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
           >
-            {/* Email */}
-            <div className="relative col-span-2">
-              <input
-                type="email"
-                name="email"
-                value={uemail}
-                readOnly
-                placeholder=" "
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                Email
-              </label>
-            </div>
-
-            {/* First Name */}
-            <div className="relative">
-              <input
-                type="text"
-                name="first_name"
-                value={profileData.first_name}
-                onChange={handleChange}
-                placeholder=" "
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                First Name
-              </label>
-            </div>
-
-            {/* Last Name */}
-            <div className="relative">
-              <input
-                type="text"
-                name="last_name"
-                value={profileData.last_name}
-                onChange={handleChange}
-                placeholder=" "
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                Last Name
-              </label>
-            </div>
-
-            {/* DOB */}
-            <div className="relative">
-              <input
-                type="date"
-                name="dob"
-                value={profileData.dob}
-                onChange={handleChange}
-                placeholder=" "
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                DOB
-              </label>
-            </div>
-
-            {/* Gender */}
-            <div className="relative">
-              <select
-                name="gender"
-                value={profileData.gender}
-                onChange={handleChange}
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              >
-                <option value="" disabled></option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                Gender
-              </label>
-            </div>
-
-            {/* Contact */}
-            <div className="relative">
-              <input
-                type="tel"
-                name="contact"
-                value={profileData.contact}
-                onChange={handleChange}
-                placeholder=" "
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                Contact
-              </label>
-            </div>
-
-            {/* Address */}
-            <div className="relative col-span-2">
-              <input
-                type="text"
-                name="address"
-                value={profileData.address}
-                onChange={handleChange}
-                placeholder=" "
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                Address
-              </label>
-            </div>
-
-            {/* About */}
-            <div className="relative col-span-2">
-              <textarea
-                name="about"
-                value={profileData.about}
-                onChange={handleChange}
-                placeholder=" "
-                className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              ></textarea>
-              <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                About Yourself
-              </label>
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              className="p-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-500 transition"
+            <h1 className="text-3xl font-bold text-center mb-6 text-red-600">Create Your Profile</h1>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-6"
             >
-              Create Profile
-            </button>
-          </form>
+              {/* Email */}
+              <div className="relative col-span-2">
+                <input
+                  type="email"
+                  name="email"
+                  value={uemail}
+                  readOnly
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  Email
+                </label>
+              </div>
+
+              {/* First Name */}
+              <div className="relative">
+                <input
+                  type="text"
+                  name="first_name"
+                  value={profileData.first_name}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  First Name
+                </label>
+              </div>
+
+              {/* Last Name */}
+              <div className="relative">
+                <input
+                  type="text"
+                  name="last_name"
+                  value={profileData.last_name}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  Last Name
+                </label>
+              </div>
+
+              {/* DOB */}
+              <div className="relative">
+                <input
+                  type="date"
+                  name="dob"
+                  value={profileData.dob}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  DOB
+                </label>
+              </div>
+
+              {/* Gender */}
+              <div className="relative">
+                <select
+                  name="gender"
+                  value={profileData.gender}
+                  onChange={handleChange}
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                >
+                  <option value="" disabled></option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  Gender
+                </label>
+              </div>
+
+              {/* Contact */}
+              <div className="relative">
+                <input
+                  type="tel"
+                  name="contact"
+                  value={profileData.contact}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  Contact
+                </label>
+              </div>
+
+              {/* Address */}
+              <div className="relative col-span-2">
+                <input
+                  type="text"
+                  name="address"
+                  value={profileData.address}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  Address
+                </label>
+              </div>
+
+              {/* About */}
+              <div className="relative col-span-2">
+                <textarea
+                  name="about"
+                  value={profileData.about}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                ></textarea>
+                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
+                  About Yourself
+                </label>
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="p-2 bg-green-600 text-black font-semibold rounded-md hover:bg-green-500 transition"
+              >
+                Create Profile
+              </button>
+              
+              <button
+                type="button"
+                onClick={closeModal} // 
+                className="px-4 py-2 bg-red-500 text-black rounded-md hover:bg-red-400 focus:outline-none"
+              >
+                Cancel
+              </button>
+            </form>
+            {/* Close Modal */}
+
+          </div>
         </div>
+      )}
+    </div>
       )}
 
       {/* Update Profile Modal */}
       {showUpdateModal && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+  <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-60">
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
       <h2 className="text-2xl font-semibold mb-6 text-center text-red-600">Update Profile</h2>
       <form onSubmit={handleUpdate} className="space-y-6">
@@ -414,14 +450,14 @@ const CreateUserProfile: React.FC = () => {
         <div className=" flex justify-between items-center">
         <button
           type="submit"
-          className="p-2 bg-yellow-500 text-white font-semibold rounded-md hover:bg-yellow-400 transition "
+          className="p-2 bg-yellow-500 text-black font-semibold rounded-md hover:bg-yellow-400 transition "
         >
           Update Profile
         </button>
         <button
           type="button"
           onClick={() => setShowUpdateModal(false)}
-         className="px-2 py-2 bg-red-500 text-white rounded-md hover:bg-red-400 transition duration-200 ease-in-out"
+         className="px-2 py-2 bg-red-500 text-black rounded-md hover:bg-red-400 transition duration-200 ease-in-out"
         >
 
 

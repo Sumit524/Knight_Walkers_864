@@ -1,0 +1,181 @@
+ 
+
+  const accommodation = [
+    {value:'accommodation.hostel'},
+    {value:'accommodation.motel'},
+    {value:'accommodation.hotel'}
+  ];
+
+
+
+  const activity =[
+
+    {value:'Clubs'},
+    {value:'community'},
+    
+  ]
+
+  const commercial =[
+    {value:'commercial.supermarket'},
+    {value:'commercial.outdoor_and_sport.bicycle'},
+
+    {value:'commercial.clothing.women'},
+
+
+  ]
+
+
+  const catering =[
+    {value:'catering.restaurant.italian'},
+    {value:'catering.fast_food.kebab'},
+
+    {value:'catering.cafe.bubble_tea'},
+
+  ]
+
+
+  const entertainment =[
+   {value:'entertainment.culture.theatre'},
+   {value:'entertainment.museum'},
+   {value:'entertainment.theme_park'}
+  ],
+
+  const  healthcare =[
+{value:'healthcare.dentist'},
+{value:'healthcare.pharmacy'},
+{value:healthcare.clinic_or_praxis.psychiatry'}
+
+  ],
+
+const tourism =[
+{value:'tourism.sights.lighthouse'},
+{value:'tourism.attraction.viewpoint'},
+{value:'tourism.sights.ruines'},
+
+]  
+
+const sport =[
+
+    {value:'Sport centers'},
+    {value:'stadiums'},
+
+    {value:'fitness'},
+
+]
+
+
+const  public_transport =[
+    {value:'public_transport.train'}
+    {value:'public_transport.subway.entrance'}
+
+    {value:'public_transport.bus'}
+
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const activity =[
+
+    {value:'Clubs'},
+    {value:'community'},
+    
+  ]
+
+  const commercial =[
+    {value:'commercial.supermarket'},
+    {value:'commercial.outdoor_and_sport.bicycle'},
+
+    {value:'commercial.clothing.women'},
+
+
+  ]
+
+
+  const catering =[
+    {value:'catering.restaurant.italian'},
+    {value:'catering.fast_food.kebab'},
+
+    {value:'catering.cafe.bubble_tea'},
+
+  ]
+
+
+  const entertainment =[
+   {value:'entertainment.culture.theatre'},
+   {value:'entertainment.museum'},
+   {value:'entertainment.theme_park'}
+  ]
+
+  const  healthcare =[
+{value:'healthcare.dentist'},
+{value:'healthcare.pharmacy'},
+{value:'healthcare.clinic_or_praxis.psychiatry'}
+
+  ]
+
+const tourism =[
+{value:'tourism.sights.lighthouse'},
+{value:'tourism.attraction.viewpoint'},
+{value:'tourism.sights.ruines'},
+
+]  
+
+const sport =[
+
+    {value:'Sport centers'},
+    {value:'stadiums'},
+
+    {value:'fitness'},
+
+]
+
+
+const  public_transport =[
+    {value:'public_transport.train'},
+    {value:'public_transport.subway.entrance'},
+
+    {value:'public_transport.bus'}
+
+]

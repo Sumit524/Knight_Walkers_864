@@ -20,6 +20,8 @@ import CreateProfile from "./pages/CreateProfile";
 
 import ProfileImage from "./pages/ProfileImage";
 import UserDetailsPage from "./pages/UserDetailsPage";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const App: React.FC = () => {
   const auth = useSelector((state:RootState) => (state.auth))
@@ -49,7 +51,7 @@ const App: React.FC = () => {
           <Route path="/locations" element={<AvailableLocations />} />
           <Route path="/createprofile" element={<CreateProfile/>} />
          
-          <Route path="/findMatch" element={auth.isAuthenticated ? <FindMatch />: <Navigate to={'/notauthenticated'} />}/>
+          <Route path="/findMatch" element={auth.isAuthenticated ? <FindMatch />: <Navigate to={'/login'} />}/>
             <></>
            
           <Route path="/userdetails" element={< UserDetailsPage/>} />

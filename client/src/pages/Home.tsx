@@ -11,12 +11,12 @@ const Home: React.FC = () => {
 
     useEffect(() => {
        
-       console.log("Auth in Home: ", auth);
+    //    console.log("Auth in Home: ", auth);
     }, [auth]);
     return (
         <>
         
-        <div className="h-screen mt-5 px-2 py-2  bg-gray-900">
+        <div className="h-screen mt-5 px-2 py-2 ">
             <Header />
 
         </div>

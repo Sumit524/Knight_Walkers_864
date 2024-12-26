@@ -87,10 +87,10 @@ const Navbar: React.FC = () => {
             <div className="container mx-auto flex justify-between items-center">
                 <Link
                     to="/"
-                    className={`px-2 py-1  text-white text-lg font-semibold ${activeLink === "home" ? " text-black font-bold" : "font-bold"}`}
+                    className={`px-2 py-1  text-white text-2xl font-semibold ${activeLink === "home" ? " text-black font-bold" : "font-bold"}`}
                     onClick={() => handleLinkClick("home")}
                 >
-                    Find The Meet
+                    Find The <strong className="text-red-500">Meet</strong>
                 </Link>
                 <button
                     onClick={() => setIsOpen(!isOpen)}

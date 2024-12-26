@@ -55,7 +55,7 @@ export const check_authenticated= createAsyncThunk(
                 const res = await axios.post(`${api_url}/auth/jwt/verify/`, body, config)
     
                 if (res.data.code !== 'token_not_valid') {
-                    console.log("response inside auth_authenticated", res);
+                    // console.log("response inside auth_authenticated", res);
                     dispatch(AUTHENTICATED_SUCCESS());
                 } else {
                     dispatch(AUTHENTICATED_FAILED());
@@ -98,85 +98,51 @@ export const load_user = createAsyncThunk(
     }
 );
 
+
 export const login = createAsyncThunk(
-    'auth/login',
-    async ({ email, password }: LoginPayload, { dispatch }) => {
-        try {
-            console.log("API URL: ", api_url);
+  'auth/login',
+  async ({email, password}: LoginPayload, {dispatch}) => {
+      try {
+          // console.log("hello authActions line 54", api_url);
+          const config= {
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          };
 
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            };
+          const body= JSON.stringify({email, password});
+          
+          const res: AxiosResponse<LoginResponse> = await axios.post(`${api_url}/auth/jwt/create/`, body, config);
+          console.log("inside authActions line 63", res)
+          dispatch(LOGIN_SUCCESS(res.data));
+          dispatch(load_user());
 
-            const body = JSON.stringify({ email, password });
-
-            // Making POST request
-            const res: AxiosResponse<LoginResponse> = await axios.post(
-                `${api_url}/auth/jwt/create/`,
-                body,
-                config
-            );
-
-            console.log("Login response: ", res.data);
-
-            // Dispatch success actions
-            dispatch(LOGIN_SUCCESS(res.data));
-            dispatch(load_user());
-        } catch (error) {
-            // Enhanced error handling
-            if (axios.isAxiosError(error)) {
-                if (error.response) {
-                    console.error("Server responded with an error:", error.response.data);
-                    console.error("Status code:", error.response.status);
-                } else if (error.request) {
-                    console.error("No response received from the server:", error.request);
-                } else {
-                    console.error("Error setting up the request:", error.message);
-                }
-            } else {
-                console.error("Unexpected error:", error);
-            }
-
-            dispatch(LOGIN_FAIL());
-        }
-    }
+      } catch (error) {
+          console.log("error: ", error);
+          dispatch(LOGIN_FAIL());
+      }
+  }
 );
-
 export const signup = createAsyncThunk(
-    'auth/signup',
-    async ({ email, password, re_password }: SignupPayload, { dispatch }) => {
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            };
+  'auth/signup',
+  async ({name, email, password, re_password}: SignupPayload, {dispatch}) => {
+      try {
+          const config= {
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          };
 
-            const body = JSON.stringify({
-                email,  // Replace with 'username' if needed
-                password,
-                re_password,
-            });
+          const body= JSON.stringify({name, email, password, re_password});
+          
+          const res: AxiosResponse<User> = await axios.post(`${api_url}/auth/users/`, body, config);
+          dispatch(SIGNUP_SUCCESS());
 
-            const res: AxiosResponse<User> = await axios.post(
-                `${api_url}/auth/users/`,
-                body,
-                config
-            );
-
-            console.log("Signup successful: ", res.data);
-            dispatch(SIGNUP_SUCCESS());
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error("Axios error response: ", error.response?.data);
-            } else {
-                console.error("Unexpected error: ", error);
-            }
-            dispatch(SIGNUP_FAIL());
-        }
-    }
+      } catch (error) {
+          console.log("error: ", error);
+          dispatch(SIGNUP_FAIL());
+      }
+  }
 );
 
 

@@ -80,11 +80,11 @@ const FindMatch: React.FC = () => {
     };
 
     return (
-        <div className="bg-gray-100 min-h-screen flex flex-col items-center p-8">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Nearby Users Interested in the Zoo</h2>
-            <ul id="user-list" className="w-full max-w-md space-y-4">
+        <div className="bg-gray-900 min-h-screen flex flex-col items-center p-8 ">
+            <h2 className="text-2xl font-bold mb-6 text-white">Nearby Users Interested in the  <strong className='text-yellow-500'>Zoo</strong></h2>
+            <ul id="user-list" className="w-full max-w-md space-y-4" >
                 {users.map(user => (
-                    <li key={user.id} className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
+                    <li key={user.id} className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center" style={{ boxShadow: '0 1px 10px rgba(255, 255, 255, 0.7)' }}>
                         <div>
                             <p className="text-lg font-medium text-gray-900">{user.username}</p>
                             <p className="text-sm text-gray-500">{user.distance.toFixed(2)} meters away</p>
