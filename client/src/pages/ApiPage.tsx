@@ -3,7 +3,9 @@ import axios from 'axios';
 import * as preferencesOptions from './preferencesOptions'; // Adjust the import as needed
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-// Global toast configuration
+const apiKey = import.meta.env.VITE_API_KEY;
+
+
 const toastConfig = {
   success: {
     className: "bg-green-500 text-white font-bold text-lg rounded-lg shadow-md",
@@ -116,25 +118,25 @@ const ApiPage: React.FC = () => {
 
   const fetchcategory = async (radiusValue: string) => {
     if (!location || !selectedCategory || !selectedOption) {
-      showToast("error",'Location, category, and option are required to fetch data.');
+      showToast("error", 'Location, category, and option are required to fetch data.');
       return;
     }
-
-    const apiKey = 'a05f884d242f4a65acb30b198dad8375';
+  
+    const apiKey = import.meta.env.VITE_API_KEY; // Accessing the API key here
     const url = `https://api.geoapify.com/v2/places?categories=${selectedCategory}.${selectedOption}&filter=circle:${location.lng},${location.lat},${radiusValue}&bias=proximity:${location.lng},${location.lat}&limit=20&apiKey=${apiKey}`;
-
+  
     try {
       setLoading(true);
       setError(null);
       const response = await axios.get(url);
       const data = response.data;
-
+  
       if (!data.features || data.features.length === 0) {
-        showToast("error",'No results found for the selected category and option in the specified radius.');
+        showToast("error", 'No results found for the selected category and option in the specified radius.');
         setcategory([]);
         return;
       }
-
+  
       const formattedData = data.features.map((feature: any) => ({
         name: feature.properties.name || 'Unknown Name',
         country: feature.properties.country || 'Unknown Country',
@@ -147,16 +149,16 @@ const ApiPage: React.FC = () => {
         state_code: feature.properties.state_code || 'Unknown State Code',
         formatted: feature.properties.formatted || 'Unknown Address',
       }));
-
+  
       setcategory(formattedData);
       showToast("success", "Data fetched successfully!");
     } catch (err) {
-       showToast("error",'Failed to fetch  data. Please check  again  with large radius value .');
-      
+      showToast("error", 'Failed to fetch data. Please check again with a larger radius value.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (location && selectedCategory && selectedOption) {

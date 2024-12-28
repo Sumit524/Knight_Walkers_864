@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                     aria-label="User Menu"
                 >
                     <span
-                        className={`bg-yellow-500 rounded-lg px-2 py-1 text-black font-bold hover:text-gray-300 ${
+                        className={`bg-yellow-400  rounded-lg px-2 py-1 text-black font-bold hover:text-gray-300 ${
                             activeLink === "user" ? "bg-yellow-500 text-black rounded-lg" : ""
                         }`}
                         onClick={() => handleLinkClick("user")}

@@ -35,7 +35,7 @@ const Chat: React.FC<ChatProps> = ({ roomName }) => {
     };
 
     return (
-        <div className="w-full max-w-md p-6 bg-yellow-200 rounded-lg shadow-lg mx-auto mt-6">
+        <div className="w-full max-w-md p-6 bg-yellow-200 rounded-lg shadow-lg mx-auto mt-2">
         <h2 className="text-xl font-semibold mb-4 bg-red-500 text-white rounded-md p-2 text-center shadow-md">
           Chat Room: <strong className="text-black">{roomName}</strong>
         </h2>
