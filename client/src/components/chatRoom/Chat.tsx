@@ -22,7 +22,11 @@ const Chat: React.FC<ChatProps> = ({ roomName }) => {
     }, [roomName]);
 
     const sendMessage = () => {
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+        if(message.length==0){
+           return;
+
+        }
+       else  if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
             socketRef.current.send(JSON.stringify({ message }));
             setMessage('');
         } else {
@@ -31,32 +35,48 @@ const Chat: React.FC<ChatProps> = ({ roomName }) => {
     };
 
     return (
-        <div className="w-full max-w-md p-4 bg-yellow-200 rounded-lg shadow-md mt-0"style={{ boxShadow: '0 2px 5px rgba(255, 255, 255, 0.7)' }}>
-            <h2 className="text-xl font-semibold mb-4 bg-red-500 rounded-md p-1 mt-0" >Chat Room: <strong className="text-black">  {roomName}</strong></h2>
-            <div className="bg-white h-64 overflow-y-auto p-2 mb-4  rounded-md" style={{ boxShadow: '2px 2px 2px rgba(18, 17, 17, 0.7)' }}>
-                {messages.map((msg, index) => (
-                    <div key={index} className="p-2 mb-2 bg-green-300 rounded-lg text-black" >
-                        {msg}
-                    </div>
-                ))}
-            </div>
-            <div className="flex">
-                <input 
-                
-                    type="text" 
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="text-black flex-grow p-2 rounded-l-md text-gray-900 border border-black focus:outline-none focus:ring-2 focus:ring-black "
-                    placeholder="Type your message..."
-                    
-                />
-                <button 
-                    onClick={sendMessage} 
-                    className="p-2 bg-green-700 rounded-r-md hover:bg-green-600 text-black">
-                    Send
-                </button>
-            </div>
+        <div className="w-full max-w-md p-6 bg-yellow-200 rounded-lg shadow-lg mx-auto mt-6">
+        <h2 className="text-xl font-semibold mb-4 bg-red-500 text-white rounded-md p-2 text-center shadow-md">
+          Chat Room: <strong className="text-black">{roomName}</strong>
+        </h2>
+      
+        {/* Message Container */}
+        <div 
+          className="bg-white h-64 overflow-y-auto p-4 mb-4 rounded-md shadow-inner"
+          style={{ boxShadow: 'inset 0 2px 5px rgba(0, 0, 0, 0.1)' }}
+        >
+          {messages.length > 0 ? (
+            messages.map((msg, index) => (
+              <div 
+                key={index} 
+                className="p-3 mb-3 bg-green-300 text-black rounded-lg shadow-sm"
+              >
+                {msg}
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center">No messages yet. Start the conversation!</p>
+          )}
         </div>
+      
+        {/* Input Field and Button */}
+        <div className="flex items-center">
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="flex-grow p-3 rounded-l-md border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-600 placeholder-gray-400"
+            placeholder="Type your message..."
+          />
+          <button
+            onClick={sendMessage}
+            className="p-3 bg-green-700 text-white rounded-r-md hover:bg-green-600 transition-all shadow-md"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+      
     );
 };
 

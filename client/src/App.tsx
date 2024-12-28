@@ -17,11 +17,11 @@ import { AppDispatch, RootState } from "./app/store";
 import { check_authenticated, load_user } from "./feature/auth/authActions";
 import FindMatch from "./locations/FindMatch";
 import CreateProfile from "./pages/CreateProfile";
-
+import Testcheck from './pages/CategoryInput'
 import ProfileImage from "./pages/ProfileImage";
 import UserDetailsPage from "./pages/UserDetailsPage";
 import 'react-toastify/dist/ReactToastify.css';
-
+import Api from './pages/ApiPage'
 
 const App: React.FC = () => {
   const auth = useSelector((state:RootState) => (state.auth))
@@ -41,6 +41,9 @@ const App: React.FC = () => {
           <Route path="/signup" element={<Signup />}/>
         
           <Route path="/" element={<Home/>} />
+          <Route path="/apitesting" element={<Api/>} />
+          <Route path="/options" element={<Testcheck/>} />
+
           {/* <Route path="/" element={auth.isAuthenticated ? <Home/>: <Navigate to={'/notauthenticated'} />} /> */}
           <Route path="*" element={<NotFound/>} />
           <Route path = '/notauthenticated' element={<RegisterFirst/>}/>

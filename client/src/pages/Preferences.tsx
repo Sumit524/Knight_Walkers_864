@@ -120,7 +120,7 @@ const PreferencesForm: React.FC = () => {
           }).map(([key, value]) => (
             <li key={key}>
               <strong className="text-red-700">{key}: </strong>
-              {value?.length ? value.join(', ') : 'No preferences selected'}
+              {value?.length ? value.join(', ') : 'N/A'}
             </li>
           ))}
         </ul>
