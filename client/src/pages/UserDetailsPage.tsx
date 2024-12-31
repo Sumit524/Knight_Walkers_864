@@ -4,7 +4,7 @@ import ProfileImagePage from './ProfileImage';
 
 function UserDetailsPage() {
   return (
-    <div className="h-full flex flex-col sm:flex-row p-4 sm:p-8 gap-4 ">
+    <div className="h-full flex flex-col sm:flex-row p-2 sm:p-8 gap-4 ">
       {/* Create User Profile Section */}
       <div className="flex justify-center items-center h-auto sm:h-full w-full sm:w-1/3 p-4 bg-gray-800 rounded-lg">
         <CreateUserProfile />
@@ -16,7 +16,7 @@ function UserDetailsPage() {
       </div>
 
       {/* Preferences Form Section */}
-      <div className="flex justify-center items-center h-auto sm:h-full w-full sm:w-1/3 p-4 bg-gray-800 rounded-lg">
+      <div className="flex justify-center items-center h-auto sm:h-full w-full sm:w-1/3 p-4 bg-gray-800 rounded-lg ">
         <PreferencesForm />
       </div>
     </div>

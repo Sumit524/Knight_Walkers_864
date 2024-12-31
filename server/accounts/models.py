@@ -71,8 +71,8 @@ class UserInfo(models.Model):
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
     dob = models.DateField() 
     contact = models.CharField(max_length=15)
-    address = models.CharField(max_length=200)
-    about = models.CharField(max_length=600)
+    address = models.CharField(max_length=800)
+    about = models.CharField(max_length=1400)
      
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

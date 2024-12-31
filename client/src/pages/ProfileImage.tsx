@@ -5,6 +5,7 @@ import { RootState, AppDispatch } from '../app/store';
 import { api_url } from "../config/config";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { showToast } from "./ToastUtil"; 
 
 const ProfileImagePage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +19,9 @@ const ProfileImagePage: React.FC = () => {
     dispatch(fetchUserProfileImage())
       .unwrap()
       // .then(() => toast.info("Fetched profile image successfully!", { autoClose: 2000 }))
-      .catch(() => toast.error("Failed to fetch profile image.", { autoClose: 3000 }));
+      .catch(() =>  showToast("error", "Failed to fetch profile image."));
+             
+      
   }, [dispatch]);
 
   // Handle image file selection
@@ -28,7 +31,8 @@ const ProfileImagePage: React.FC = () => {
       setImageFile(file);
      
     } else {
-      toast.warn("No file selected.", { autoClose: 2000 });
+      // toast.warn("No file selected.", { autoClose: 2000 });
+      showToast("error", "No file selected")
     }
   };
 
@@ -39,13 +43,19 @@ const ProfileImagePage: React.FC = () => {
       formData.append('profile_image', imageFile);
       try {
         await dispatch(uploadUserProfileImage(formData)).unwrap();
-        toast.success("Profile image updated successfully!", { autoClose: 3000 });
+                showToast("success", "Profile image updated successfully");
+        
+        // toast.success("Profile image updated successfully!", { autoClose: 3000 });
         setIsProfileModelOpen(false); // Close the modal
       } catch (uploadError) {
-        toast.error("Failed to upload profile image. Please try again.", { autoClose: 3000 });
+        showToast("error", "Failed to upload profile image. Please try again.");
+
+        // toast.error("Failed to upload profile image. Please try again.", { autoClose: 3000 });
       }
     } else {
-      toast.warn("No image selected. Please choose an image.", { autoClose: 3000 });
+      showToast("error", "No image selected. Please choose an image");
+      
+      // toast.warn("No image selected. Please choose an image.", { autoClose: 3000 });
     }
   };
 
@@ -62,7 +72,7 @@ const ProfileImagePage: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto bg-yellow-200 p-6 rounded-lg shadow-md "  style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)' }}>
-      <div className="text-center  ">
+      <div className="text-center  bg-transparent ">
         {profileImage ? (
           <>
                     <h1 className=" text-2xl  text-center mb-4  text-red-600 ">User Profile Image</h1>
@@ -71,7 +81,7 @@ const ProfileImagePage: React.FC = () => {
               src={`${api_url}${profileImage}`} // Concatenate the base URL with the image path
               alt="Profile"
               className="w-46 h-56 rounded-md mx-auto mb-6"
-              style={{ boxShadow: '0 10px 20px rgba(12, 12, 12, 0.7)' }}
+              style={{ boxShadow: '0 2px 5px rgba(12, 12, 12, 0.7)' }}
             />
             <button
               onClick={() => setIsProfileModelOpen(true)} // Open modal to update image

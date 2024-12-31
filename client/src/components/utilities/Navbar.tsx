@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../feature/auth/authActions";
+import { FaRegComments,FaUserAlt,FaUserCircle,FaSearch ,FaSignOutAlt } from 'react-icons/fa';
+
+
 
 const Navbar: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -20,12 +23,12 @@ const Navbar: React.FC = () => {
         setActiveLink(link);
     };
 
-    const guestLinks = (): ReactNode => (
+    const guestLinks = (): React.ReactNode => (
         <Fragment>
             <li>
                 <Link
                     to="/login"
-                    className={`px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
+                    className={`flex items-center px-3 py-1 text-aqua font-bold hover:text-gray-300 ${
                         activeLink === "login" ? "bg-yellow-500 text-black rounded-lg" : ""
                     }`}
                     onClick={() => handleLinkClick("login")}
@@ -36,7 +39,7 @@ const Navbar: React.FC = () => {
             <li>
                 <Link
                     to="/signup"
-                    className={`px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
+                    className={`flex items-center px-3 py-1 text-aqua font-bold hover:text-gray-300 ${
                         activeLink === "signup" ? "bg-yellow-500 text-black rounded-lg" : ""
                     }`}
                     onClick={() => handleLinkClick("signup")}
@@ -47,23 +50,25 @@ const Navbar: React.FC = () => {
         </Fragment>
     );
 
-    const authLinks = (): ReactNode => (
+    const authLinks = (): React.ReactNode => (
         <Fragment>
-            <div className="relative group ">
+            <div className="relative group">
                 <button
-                    className="text-aqua  flex items-center space-x-2 focus:outline-none"
+                    className="flex items-center text-aqua font-bold focus:outline-none"
                     aria-label="User Menu"
                 >
                     <span
-                        className={`bg-yellow-400  rounded-lg px-2 py-1 text-black font-bold hover:text-gray-300 ${
-                            activeLink === "user" ? "bg-yellow-500 text-black rounded-lg" : ""
+                        className={`bg-green-400 rounded-lg px-2 py-1 text-black hover:text-black ${
+                            activeLink === "user" ? "bg-yellow-500 text-black" : ""
                         }`}
                         onClick={() => handleLinkClick("user")}
                     >
-                        User profile
+                        <div className="flex">
+                        <FaUserAlt  size={20} className="mr-2" /> Profile
+                        </div>
                     </span>
                     <svg
-                        className="w-10 h-4"
+                        className="w-6 h-6 ml-1"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
@@ -74,37 +79,43 @@ const Navbar: React.FC = () => {
                     </svg>
                 </button>
                 {/* Dropdown Menu */}
-                <ul className="absolute mt-3 right-0  w-48 bg-gray-900 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"  style={{ boxShadow: '0 10px 20px rgba(188, 176, 176, 0.7)' }}>
+
+      
+
+                <ul className="absolute mt-2 p-2 right-0 w-48 bg-gray-900 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" style={{ boxShadow: '0 3px 6px rgba(255, 255, 255, 0.7)' }} >
                     <li>
                         <Link
                             to="/userdetails"
-                            className={`px-2 text-aqua font-bold hover:text-gray-300 ${
+                            className={`flex items-center px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
                                 activeLink === "userdetails" ? "bg-yellow-500 text-black rounded-lg" : ""
                             }`}
                             onClick={() => handleLinkClick("userdetails")}
                         >
+                            <FaUserCircle size={20} className="mr-2" />
                             User Details
                         </Link>
                     </li>
                     <li>
                         <Link
                             to="/apitesting"
-                            className={`px-2 text-aqua font-bold hover:text-gray-300 ${
+                            className={`flex items-center px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
                                 activeLink === "apitesting" ? "bg-yellow-500 text-black rounded-lg" : ""
                             }`}
                             onClick={() => handleLinkClick("apitesting")}
                         >
+                            <FaSearch size={20} className="mr-2" />
                             API Testing
                         </Link>
                     </li>
                     <li>
                         <Link
                             to="/chatroom"
-                            className={`px-2  text-aqua font-bold hover:text-gray-300 ${
+                            className={`flex items-center px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
                                 activeLink === "chatroom" ? "bg-yellow-500 text-black rounded-lg" : ""
                             }`}
                             onClick={() => handleLinkClick("chatroom")}
                         >
+                            <FaRegComments size={20} className="mr-2" />
                             Chat Room
                         </Link>
                     </li>
@@ -115,10 +126,11 @@ const Navbar: React.FC = () => {
                                 logout_user();
                                 handleLinkClick("logout");
                             }}
-                            className={`px-2  text-aqua font-bold hover:text-gray-300 ${
+                            className={`flex items-center px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
                                 activeLink === "logout" ? "bg-yellow-500 text-black rounded-lg" : ""
                             }`}
                         >
+                            <FaSignOutAlt size={20} className="mr-2" />
                             Logout
                         </button>
                     </li>
@@ -132,8 +144,8 @@ const Navbar: React.FC = () => {
             <div className="container mx-auto flex justify-between items-center">
                 <Link
                     to="/"
-                    className={`px-2  text-white text-2xl font-semibold ${
-                        activeLink === "home" ? "text-black font-bold" : "font-bold"
+                    className={`text-2xl text-white font-semibold ${
+                        activeLink === "home" ? "text-black font-bold" : ""
                     }`}
                     onClick={() => handleLinkClick("home")}
                 >
@@ -157,16 +169,14 @@ const Navbar: React.FC = () => {
                 </button>
                 <div
                     className={`${
-                        isOpen
-                            ? "block bg-blue-600 p-4 mt-2 rounded-md shadow-lg"
-                            : "hidden"
+                        isOpen ? "block bg-blue-600 p-4 mt-2 rounded-md shadow-lg" : "hidden"
                     } lg:flex lg:items-center lg:static lg:w-auto`}
                 >
                     <ul className="flex flex-col lg:flex-row lg:space-x-4 mt-4 lg:mt-0 space-y-2 lg:space-y-0">
                         <li>
                             <Link
                                 to="/"
-                                className={`px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
+                                className={`px-3 py-1 text-aqua font-bold hover:text-gray-300 ${
                                     activeLink === "home" ? "bg-yellow-500 text-black rounded-lg" : ""
                                 }`}
                                 onClick={() => handleLinkClick("home")}

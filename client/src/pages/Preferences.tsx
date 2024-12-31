@@ -5,6 +5,8 @@ import { AppDispatch, RootState } from '../app/store';
 import { saveUserData, load_user, Load_UserPreferences } from '../feature/auth/authActions';
 import { UserPreferencesInterface } from '../feature/auth/types';
 import { toast, ToastContainer } from 'react-toastify';
+import { showToast } from "./ToastUtil"; 
+
 import 'react-toastify/dist/ReactToastify.css';
 import {
   accommodation,
@@ -52,10 +54,11 @@ const PreferencesForm: React.FC = () => {
   };
 
   const handlePreferencesSubmit = async (e: React.FormEvent) => {
+    // showToast("success", "Preferences updated successfully");
     e.preventDefault();
     await dispatch(saveUserData(preferencesFormData));
     setShowPreferencesModal(false);
-    toast.success('Preferences updated successfully!');
+   
   };
 
   useEffect(() => {
@@ -156,65 +159,68 @@ const PreferencesForm: React.FC = () => {
           </button>
         </div>
       )}
+{showPreferencesModal && (
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-60 flex justify-center items-center z-50 p-2">
+    <div
+      className="bg-yellow-200 p-5 rounded-lg w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 max-w-3xl max-h-[80vh] overflow-y-auto"
+     
+    >
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 text-red-600 text-center sm:text-left">
+        Update Your Preferences
+      </h2>
 
-      {showPreferencesModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-60 flex justify-center items-center z-50">
-          <div
-            className="bg-yellow-200 p-6 rounded-lg w-1/2"
-            style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)' }}
-          >
-            <h2 className="text-xl font-semibold mb-4 text-red-600">Update Your Preferences</h2>
-
-            <form onSubmit={handlePreferencesSubmit} className="gap-6 grid grid-cols-2">
-              {Object.entries({
-                accommodation,
-                activity,
-                commercial,
-                catering,
-                entertainment,
-                tourism,
-                public_transport,
-                healthcare,
-                sport,
-              }).map(([key, options]) => (
-                <div key={key}>
-                  <label htmlFor={key} className="block text-lg capitalize">
-                    {key.replace('_', ' ')} Preferences:
-                  </label>
-                  <Select
-                    isMulti
-                    id={key}
-                    options={options}
-                    onChange={(selected) =>
-                      handlePreferenceSelectChange(key as keyof UserPreferencesInterface['preferences'], selected)
-                    }
-                    value={options.filter((option) =>
-                      preferencesFormData.preferences[key as keyof UserPreferencesInterface['preferences']].includes(option.value)
-                    )}
-                    className="mt-2"
-                  />
-                </div>
-              ))}
-              <div className="col-span-2 flex justify-between">
-                <button
-                  type="submit"
-                  className="p-2 bg-green-600 text-black font-semibold rounded-md hover:bg-green-500 transition"
-                  disabled={loading}
-                >
-                  {loading ? 'Saving...' : 'Update Preferences'}
-                </button>
-                <button
-                  type="button"
-                  className="p-2 bg-red-500 rounded-md text-blackrounded-md hover:bg-red-400 transition duration-200 ease-in-out"
-                  onClick={() => setShowPreferencesModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+      <form onSubmit={handlePreferencesSubmit} className=" gap-6 grid grid-cols-1 sm:grid-cols-2">
+        {Object.entries({
+          accommodation,
+          activity,
+          commercial,
+          catering,
+          entertainment,
+          tourism,
+          public_transport,
+          healthcare,
+          sport,
+        }).map(([key, options]) => (
+          <div key={key}>
+            <label htmlFor={key} className="block text-base sm:text-lg capitalize">
+              {key.replace('_', ' ')} Preferences:
+            </label>
+            <Select 
+              isMulti
+              id={key}
+              options={options}
+              onChange={(selected) =>
+                handlePreferenceSelectChange(key as keyof UserPreferencesInterface['preferences'], selected)
+              }
+              value={options.filter((option) =>
+                preferencesFormData.preferences[key as keyof UserPreferencesInterface['preferences']].includes(option.value)
+              )}
+              className="mt-2 "
+            />
           </div>
+        ))}
+        <div className="col-span-1 sm:col-span-2 flex flex-col sm:flex-row justify-between gap-2">
+          <button
+            type="submit"
+            className="p-2 bg-green-600 text-black font-semibold rounded-md hover:bg-green-500 transition"
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : 'Update Preferences'}
+          </button>
+          <button
+            type="button"
+            className="p-2 bg-red-500 rounded-md text-black hover:bg-red-400 transition duration-200 ease-in-out"
+            onClick={() => setShowPreferencesModal(false)}
+          >
+            Cancel
+          </button>
         </div>
-      )}
+      </form>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };

@@ -35,7 +35,8 @@ const App: React.FC = () => {
   return (
     <div>
       <BrowserRouter>
-        <Navbar />
+      
+        <Navbar/>
         <Routes>
           <Route path="/login" element={auth.isAuthenticated? <Navigate to={'/'}/> : <Login />} />
           <Route path="/signup" element={<Signup />}/>

@@ -24,7 +24,7 @@ const ChatRoom: React.FC = () => {
     
         {/* Right Side: Chat Application */}
         <div className="flex-1 flex flex-col items-center justify-center bg-gray-900 text-white p-6 rounded-lg shadow-lg" 
-          style={{ boxShadow: '0 4px 10px rgba(255, 255, 255, 0.7)' }}
+         
         >
           <h1 className="text-3xl font-bold mb-2 text-center">Talksphere</h1>
           <div className="flex flex-col items-center w-full">

@@ -3,6 +3,7 @@ import { Link} from "react-router-dom";
 import { useDispatch} from "react-redux";
 import { AppDispatch } from "../app/store";
 import { login } from "../feature/auth/authActions";
+// import { showToast } from "./ToastUtil"; 
 
 interface FormType{
     email: string;
@@ -24,7 +25,9 @@ const Login: React.FC= ()=> {
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // showToast("success", "Login  successfully");
         dispatch(login({email, password}));
+        
         
     }
 
@@ -39,7 +42,9 @@ const Login: React.FC= ()=> {
     
     
     return (
-        <div className="bg-yellow-200 p-5 rounded-md container mx-auto mt-12 max-w-md text-black" style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)'}}>
+        <>
+        <div className="m-7">
+        <div className="  bg-yellow-200 p-5 rounded-md container mx-auto m-10  max-w-md text-black" style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)'}}>
         <h1 className="text-3xl font-bold text-center mb-2">Sign In</h1>
         <p className="text-center text-gray-600 mb-6">Sign into your Account</p>
         <form onSubmit={e => onSubmit(e)} className="space-y-4 ">
@@ -98,6 +103,8 @@ const Login: React.FC= ()=> {
             </Link>
         </p>
     </div>
+    </div>
+        </>
     
     );
 }

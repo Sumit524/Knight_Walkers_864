@@ -58,10 +58,12 @@ const Signup: React.FC= ()=> {
    
     
     return (
-        <div className="bg-yellow-200 p-5 rounded-md container mx-auto mt-12 max-w-md text-black" style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)'}}>
+        <>
+        <div className="m-7">
+        <div className="bg-yellow-200  rounded-md container mx-auto mt-12 max-w-md text-black p-2" style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)'}}>
         <h1 className="text-3xl font-bold text-center mb-2">Sign Up</h1>
-        <p className="text-center text-gray-600 mb-6">Create your Account</p>
-        <form onSubmit={e => onSubmit(e)} className="space-y-4">
+        <p className="text-center text-gray-600 mb-4">Create your Account</p>
+        <form onSubmit={e => onSubmit(e)} className="space-y-4 p-3">
             <div className="mb-4">
                 <input
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -109,31 +111,39 @@ const Signup: React.FC= ()=> {
                 />
             </div>
             <button
-                className="w-full py-2 bg-blue-500 text-black font-semibold rounded-md hover:bg-blue-600 transition"
+                className="w-full py-2 bg-blue-500 text-black font-semibold rounded-md hover:bg-blue-600  transition"
                 type="submit"
             >
                 Register
             </button>
         </form>
-        <button
-            className="w-full py-2 bg-red-500 text-black font-semibold rounded-md hover:bg-red-600 mt-4 transition"
-            onClick={continueWithGoogle}
-        >
-            Continue With Google
-        </button>
-        <button
-            className="w-full py-2 bg-blue-700 text-black font-semibold rounded-md hover:bg-blue-800 mt-3 transition"
-            onClick={continueWithFacebook}
-        >
-            Continue With Facebook
-        </button>
-        <p className="text-center text-gray-600 mt-2">
-            Already have an account?
-            <Link to="/login" className="text-blue-500 hover:underline">
-                Sign In
-            </Link>
-        </p>
+       <button
+                   className="w-full py-2 bg-red-500 text-black font-semibold rounded-md hover:bg-red-600  transition"
+                   onClick={continueWithGoogle}
+               >
+                   Continue With Google
+               </button>
+               <button
+                   className="w-full py-2 bg-blue-700 text-black font-semibold rounded-md hover:bg-blue-800 mt-3 transition"
+                   onClick={continueWithFacebook}
+               >
+                   Continue With Facebook
+               </button>
+               <p className="text-center text-gray-600 mt-4">
+                   Don't have an account?{" "}
+                   <Link to="/signup" className="text-blue-500 hover:underline">
+                       Sign Up
+                   </Link>
+               </p>
+               <p className="text-center text-gray-600 mt-2 ">
+                   Forgot your Password?{" "}
+                   <Link to="/reset-password" className="text-blue-500 hover:underline">
+                       Reset Password
+                   </Link>
+               </p>
     </div>
+    </div>
+    </>
     
     );
 }

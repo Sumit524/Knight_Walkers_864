@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { load_user, load_user_profile, UpdateProfile,Load_UserPreferences } from "../feature/auth/authActions";
 import { AppDispatch, RootState } from "../app/store";
 import { CreateProfile } from "../feature/auth/authActions";
-
+// import { ToastContainer } from "react-toastify";
+import { showToast } from "./ToastUtil"; 
 
 interface ProfileForm {
   email: string;
@@ -89,7 +90,9 @@ const CreateUserProfile: React.FC = () => {
     e.preventDefault();
     const profilePayload = { ...profileData, email: uemail };
     dispatch(CreateProfile(profilePayload));
-    navigate("/profile");
+    showToast("success", "Profile Created successfully");
+    window.location.reload(); 
+    // navigate("/profile");
   };
 
 
@@ -109,19 +112,24 @@ const CreateUserProfile: React.FC = () => {
         about: filteredProfile.about,
       };
 
-      console.log("Sending update profile request with payload:", profileUpdatePayload);
+      // console.log("Sending update profile request with payload:", profileUpdatePayload);
        
       dispatch(UpdateProfile(profileUpdatePayload))
         .unwrap()
         .then((response) => {
-          console.log("Profile updated successfully:", response);
+          // console.log("Profile updated successfully:", response);
           setShowUpdateModal(false);
-          navigate("/profile");
+          showToast("success", "Profile updated successfully");
+          // navigate("/profile");
         })
         .catch((error) => {
+          showToast("error", "Error updating profile:");
+
           console.error("Error updating profile:", error);
         });
     } else {
+      showToast("error", "Profile data is unavailable for update.");
+
       console.error("Profile data is unavailable for update.");
     }
   };
@@ -140,16 +148,36 @@ const CreateUserProfile: React.FC = () => {
         <div>
           <h1 className=" text-2xl text-center mb-4  text-red-600 ">User Profile</h1>
           <ul className="space-y-2 mb-6">
-            <li> <strong className="text-red-700">Email:</strong> {filteredProfile.email}</li>
-            <li> <strong className="text-red-700">ID:</strong> {filteredProfile.id}</li>
-            <li> <strong className="text-red-700">First Name:</strong> {filteredProfile.first_name}</li>
-            <li> <strong className="text-red-700">Last Name:</strong> {filteredProfile.last_name}</li>
-            <li> <strong className="text-red-700">Gender:</strong> {filteredProfile.gender}</li>
-            <li> <strong className="text-red-700">Contact:</strong> {filteredProfile.contact}</li>
-            <li> <strong className="text-red-700">Date of Birth:</strong> {filteredProfile.dob}</li>
-            <li> <strong className="text-red-700">Address:</strong> {filteredProfile.address}</li>
-            <li> <strong className="text-red-700">About:</strong> {filteredProfile.about}</li>
-          </ul>
+  <li className="break-words">
+    <strong className="text-red-700 block break-words">Email:</strong> {filteredProfile.email}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">ID:</strong> {filteredProfile.id}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">First Name:</strong> {filteredProfile.first_name}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">Last Name:</strong> {filteredProfile.last_name}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">Gender:</strong> {filteredProfile.gender}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">Contact:</strong> {filteredProfile.contact}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">Date of Birth:</strong> {filteredProfile.dob}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">Address:</strong> {filteredProfile.address}
+  </li>
+  <li className="break-words">
+    <strong className="text-red-700">About:</strong> {filteredProfile.about}
+  </li>
+</ul>
+
+
           <button
             onClick={() => setShowUpdateModal(true)}
             className="p-2 bg-green-600 text-black font-semibold rounded-md hover:bg-green-500 transition"
@@ -341,7 +369,9 @@ const CreateUserProfile: React.FC = () => {
 
       {/* Update Profile Modal */}
       {showUpdateModal && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-600 bg-opacity-60">
+        <>
+        <div className="bg-red-700">
+  <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-700 bg-opacity-60 p-5">
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
       <h2 className="text-2xl font-semibold mb-6 text-center text-red-600">Update Profile</h2>
       <form onSubmit={handleUpdate} className="space-y-6">
@@ -471,6 +501,7 @@ const CreateUserProfile: React.FC = () => {
       
     </div>
   </div>
+  </div></>
 )}
 </div>
 

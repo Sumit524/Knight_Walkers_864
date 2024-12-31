@@ -4,35 +4,8 @@ import * as preferencesOptions from './preferencesOptions'; // Adjust the import
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 const apiKey = import.meta.env.VITE_API_KEY;
+import { showToast } from "./ToastUtil"; 
 
-
-const toastConfig = {
-  success: {
-    className: "bg-green-500 text-white font-bold text-lg rounded-lg shadow-md",
-    bodyClassName: "text-sm",
-    closeButton: false,
-    hideProgressBar: true,
-    autoClose: 3000, // Time in ms
-  },
-  error: {
-    className: "bg-red-500 text-white font-bold text-lg rounded-lg shadow-md",
-    bodyClassName: "text-sm",
-    closeButton: false,
-    hideProgressBar: true,
-    autoClose: 3000,
-  },
-  info: {
-    className: "bg-blue-500 text-white font-bold text-lg rounded-lg shadow-md",
-    bodyClassName: "text-sm",
-    closeButton: false,
-    hideProgressBar: true,
-    autoClose: 3000,
-  },
-};
-
-export const showToast = (type: "success" | "error" | "info", message: string) => {
-  toast[type](message, toastConfig[type]);
-};
 
 interface Restaurant {
   name: string;
@@ -45,6 +18,7 @@ interface Restaurant {
   suburb: string;
   state_code: string;
   formatted: string;
+  distance:number
 }
 
 const ApiPage: React.FC = () => {
@@ -64,7 +38,7 @@ const ApiPage: React.FC = () => {
         const formattedCategories: { [key: string]: { value: string; label: string }[] } = preferencesOptions;
         setCategories(formattedCategories);
       } catch (error) {
-        showToast("error",'Failed to load categories. Please try refreshing the page.');
+        showToast("info",'Failed to load categories. Please try refreshing the page.');
         
       }
     };
@@ -83,7 +57,7 @@ const ApiPage: React.FC = () => {
           setError(null);
         },
         (err) => {
-         showToast("error",'Unable to retrieve location. Please allow location access.');
+         showToast("info",'Unable to retrieve location. Please allow location access.');
         }
       );
     } else {
@@ -112,19 +86,20 @@ const ApiPage: React.FC = () => {
       setDisplayRadius(radius); // Update display radius only when valid radius is set
       fetchcategory(radius); // Fetch category based on new radius
     } else {
-       showToast("error",'Please enter a radius greater than 100 meters.');
+       showToast("info",'Please enter a radius greater than 1000 meters.');
     }
   };
 
   const fetchcategory = async (radiusValue: string) => {
     if (!location || !selectedCategory || !selectedOption) {
-      showToast("error", 'Location, category, and option are required to fetch data.');
+      showToast("info", 'Location, category, and option are required to fetch data.');
       return;
     }
   
     const apiKey = import.meta.env.VITE_API_KEY; // Accessing the API key here
     const url = `https://api.geoapify.com/v2/places?categories=${selectedCategory}.${selectedOption}&filter=circle:${location.lng},${location.lat},${radiusValue}&bias=proximity:${location.lng},${location.lat}&limit=20&apiKey=${apiKey}`;
   
+    console.log(url);
     try {
       setLoading(true);
       setError(null);
@@ -148,12 +123,13 @@ const ApiPage: React.FC = () => {
         suburb: feature.properties.suburb || 'Unknown Suburb',
         state_code: feature.properties.state_code || 'Unknown State Code',
         formatted: feature.properties.formatted || 'Unknown Address',
+        distance:feature.properties.distance|| 1000000000000000
       }));
   
       setcategory(formattedData);
       showToast("success", "Data fetched successfully!");
     } catch (err) {
-      showToast("error", 'Failed to fetch data. Please check again with a larger radius value.');
+      showToast("info", 'Failed to fetch data. Please check again with a larger radius value.');
     } finally {
       setLoading(false);
     }
@@ -170,18 +146,18 @@ const ApiPage: React.FC = () => {
   if (error) return <div className="text-center text-red-500">{error}</div>;
   return (
     <>
-    <div className='ml-5 mr-5'>
-      <div className=" p-6 max-w-lg mx-auto bg-white rounded-lg shadow-lg mb-10">
-  <div className="flex flex-col gap-6 md:flex-row md:gap-8 lg:gap-10">
+    <div className='ml-5 mr-5 mt-8'>
+      <div className=" p-6 max-w-lg mx-auto  bg-white rounded-lg  shadow-lg mb-10  ">
+  <div className="flex flex-col   gap-6  md:flex-row md:gap-8 lg:gap-10 ">
     {/* Category Dropdown */}
-    <div className="flex-1">
-      <label className="block text-base md:text-lg font-medium mb-2 text-gray-700">
+    <div className="flex-1 ">
+      <label className="block text-base md:text-lg font-medium mb-2 text-gray-700 ">
         Select Category
       </label>
       <select
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
+        className="w-full p-3 border border-gray-300  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
       >
         <option value="" disabled>
           Select a category
@@ -229,7 +205,7 @@ const ApiPage: React.FC = () => {
 </div>
 
 
-      <div className="bg-gray-800 p-6 max-w-6xl mx-auto text-blue-400 mb-10 rounded-lg shadow-md "
+      <div className="bg-yellow-200 p-6 max-w-6xl mx-auto text-blue-400 mb-10 rounded-lg shadow-md "
       style={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.7)' }}>
         <div className="grid grid-cols-1 gap-6">
           <div className="flex flex-col items-center">
@@ -239,41 +215,44 @@ const ApiPage: React.FC = () => {
                 placeholder="Enter radius (greater than 100)"
                 value={radius}
                  onChange={(e) => handleChangeRadius((e.target.value))}
-                className="p-2 border border-gray-300 rounded-md w-48 text-lg"
+                className="p-2 border border-black rounded-md w-48 text-lg"
               />
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="px-4 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
               >
                 Set Radius
+               
               </button>
             </div>
             {displayRadius && (
               <div className="mt-4 text-lg font-semibold">
-                <strong className='text-white'>Radius set to: </strong>{displayRadius} meters
+                <strong className='text-black'>Radius set to: </strong>{displayRadius} meters
               </div>
             )}
           </div>
 
           <div>
-            <h1 className="text-2xl  text-yellow-500 font-bold mb-4">Location</h1>
-            <p className='text-white'>Latitude: {location?.lat}</p>
-            <p className='text-white'>Longitude: {location?.lng}</p>
+            <h1 className="text-2xl  text-black font-bold mb-4">Location</h1>
+            <p className='text-red-500'>Latitude: {location?.lat}</p>
+            <p className='text-red-500'>Longitude: {location?.lng}</p>
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold mb-4 text-white">Nearby {selectedOption}</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <h1 className="text-2xl font-bold mb-4 text-black">Nearby {selectedOption}</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-red-500">
               {category.length === 0 ? (
                 <p>Please select a valid category and option. || Please choose a  valid radius  value (greater than 1000 meter) </p>
               ) : (
                 category.map((restaurant, index) => (
-                  <div key={index} className="p-4 border border-gray-300 rounded-md">
-                    <h2 className="text-xl font-semibold">{restaurant.name}</h2>
-                    <ul className="text-sm text-white">
-                      <li>{restaurant.formatted}</li>
-                      <li>{restaurant.city}, {restaurant.state}</li>
-                      <li>{restaurant.country}</li>
+                  <div key={index} className="p-4 border border-black  rounded-md bg-yellow-200"   style={{ boxShadow: '0 2px 8px black' }}>
+                    <h2 className="text-xl font-semibold text-black">{restaurant.name}</h2>
+                    <ul className="text-sm text-black">
+                      <li><strong className='text-red-500  mb-2'>Full Address:   </strong>{restaurant.formatted}</li>
+                      <li><strong className='text-red-500'>Country:  </strong> {restaurant.country}</li>
+                      <li><strong className='text-red-500'>State and city:  </strong>  {restaurant.state},{restaurant.city}</li>
+                      <li><strong className='text-red-500'>Distance:  </strong>  {(restaurant.distance)/1000}km</li>
+
                     </ul>
                   </div>
                 ))
