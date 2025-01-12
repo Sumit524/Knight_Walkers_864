@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { load_user, load_user_profile, UpdateProfile,Load_UserPreferences } from "../feature/auth/authActions";
-import { AppDispatch, RootState } from "../app/store";
-import { CreateProfile } from "../feature/auth/authActions";
+import { load_user, load_user_profile, UpdateProfile,Load_UserPreferences } from "../../feature/auth/authActions";
+import { AppDispatch, RootState } from "../../app/store";
+import { CreateProfile } from "../../feature/auth/authActions";
 // import { ToastContainer } from "react-toastify";
-import { showToast } from "./ToastUtil"; 
+import { showToast } from "../others/ToastUtil"; 
 
 interface ProfileForm {
   email: string;
@@ -33,7 +33,7 @@ interface UserProfile {
 const CreateUserProfile: React.FC = () => {
   
   const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { user, profile } = useSelector((state: RootState) => state.auth);
 
   const [filteredProfile, setFilteredProfile] = useState<UserProfile | null>(null);

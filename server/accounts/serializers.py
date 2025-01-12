@@ -14,6 +14,10 @@ class UserCreateSerializer(UserCreateSerializer):
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
+
+    # The Meta class is a special class inside the serializer that provides configuration about how the serializer should work.
+
+    # '__all__' is a special value that means all the fields of the model should be included.
     class Meta:
         model = UserInfo  
         fields = '__all__' 

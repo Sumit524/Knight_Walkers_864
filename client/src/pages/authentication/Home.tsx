@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import Header from "../components/utilities/Header";
+import Header from "../../components/utilities/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { check_authenticated, load_user } from "../feature/auth/authActions";
-import { AppDispatch, RootState } from "../app/store";
+import { check_authenticated, load_user } from "../../feature/auth/authActions";
+import { AppDispatch, RootState } from "../../app/store";
 import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {

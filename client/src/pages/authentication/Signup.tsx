@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
 import { useDispatch, useSelector} from "react-redux";
-import { AppDispatch, RootState } from "../app/store";
-import { signup } from "../feature/auth/authActions";
+import { AppDispatch, RootState } from "../../app/store";
+import { signup } from "../../feature/auth/authActions";
 
 interface FormType{
     name: string;

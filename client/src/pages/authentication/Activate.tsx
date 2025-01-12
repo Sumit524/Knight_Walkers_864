@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { AppDispatch } from "../app/store";
-import { verify } from "../feature/auth/authActions";
+import { AppDispatch } from "../../app/store";
+import { verify } from "../../feature/auth/authActions";
 
 const Activate: React.FC = () => {
     const [verified, setVerified] = useState<boolean>(false);

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import * as preferencesOptions from './preferencesOptions'; // Adjust the import as needed
-import { toast, ToastContainer } from 'react-toastify';
+// import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-const apiKey = import.meta.env.VITE_API_KEY;
-import { showToast } from "./ToastUtil"; 
+// const apiKey = import.meta.env.VITE_API_KEY;
+import { showToast } from "../others/ToastUtil"; 
 
 
 interface Restaurant {

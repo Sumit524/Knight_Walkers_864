@@ -29,3 +29,33 @@ Database: PostgreSQL or MySQL
 APIs:
 Google Maps API for location services and traffic updates
 Optional: Reservation API integration for making bookings directly from the app
+
+
+
+
+
+/////Sumit CHaurasiya 1-1-25
+
+
+
+----------------------------------------SERIALIZER.py-------------------------------------------
+
+SERIALIZER----------
+In Django, serializers are used to convert complex data types such as Django models or queryset objects into JSON (or other formats like XML) that can be easily rendered into a response or parsed into Python data structures. They also handle the reverse process: taking JSON or other data formats and converting them into Python objects that can be saved back into the database.
+
+
+
+
+
+----------------------------------------VIEWS.py-------------------------------------------
+
+
+ListCreateAPIView:--
+GET /users/ → Returns a list of all users.
+POST /users/ → Creates a new user.
+
+RetrieveUpdateDestroyAPIView:---
+GET /users/1/ → Returns details of the user with ID 1.
+PUT /users/1/ → Updates the user with ID 1.
+DELETE /users/1/ → Deletes the user with ID 1.
+

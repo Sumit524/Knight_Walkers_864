@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams} from "react-router-dom";
 import { useDispatch} from "react-redux";
-import { AppDispatch } from "../app/store";
-import { reset_password_confirm } from "../feature/auth/authActions";
+import { AppDispatch } from "../../app/store";
+import { reset_password_confirm } from "../../feature/auth/authActions";
 
 interface FormType{
     new_password: string;

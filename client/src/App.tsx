@@ -1,27 +1,27 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate, } from "react-router-dom";
 import Navbar from "./components/utilities/Navbar";
-import NotFound from "./pages/NotFound";
-import Home from "./pages/Home";
+import NotFound from "./pages/others/NotFound";
+import Home from "./pages/authentication/Home";
 import ChatRoom from "./components/chatRoom/ChatRoom";
 import AvailableLocations from './locations/AvailableLocations';
-import TodoHome from "./components/todo/TodoHome";
-import RegisterFirst from "./pages/RegisterFirst";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ResetPassword from "./pages/ResetPassword";
-import Activate from "./pages/Activate";
-import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
+// import TodoHome from "./components/todo/TodoHome";
+import RegisterFirst from "./pages/authentication/RegisterFirst";
+import Login from "./pages/authentication/Login";
+import Signup from "./pages/authentication/Signup";
+import ResetPassword from "./pages/authentication/ResetPassword";
+import Activate from "./pages/authentication/Activate";
+import ResetPasswordConfirm from "./pages/authentication/ResetPasswordConfirm";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./app/store";
 import { check_authenticated, load_user } from "./feature/auth/authActions";
 import FindMatch from "./locations/FindMatch";
-import CreateProfile from "./pages/CreateProfile";
-import Testcheck from './pages/CategoryInput'
-import ProfileImage from "./pages/ProfileImage";
-import UserDetailsPage from "./pages/UserDetailsPage";
+import CreateProfile from "./pages/userCridentialsPages/CreateProfile";
+import Testcheck from './pages/userCridentialsPages/CategoryInput'
+import ProfileImage from "./pages/userCridentialsPages/ProfileImage";
+import UserDetailsPage from "./pages/userCridentialsPages/UserDetailsPage";
 import 'react-toastify/dist/ReactToastify.css';
-import Api from './pages/ApiPage'
+import Api from './pages/userCridentialsPages/ApiPage'
 
 const App: React.FC = () => {
   const auth = useSelector((state:RootState) => (state.auth))

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUserProfileImage, uploadUserProfileImage } from '../feature/auth/authActions';
-import { RootState, AppDispatch } from '../app/store';
-import { api_url } from "../config/config";
+import { fetchUserProfileImage, uploadUserProfileImage } from '../../feature/auth/authActions';
+import { RootState, AppDispatch } from '../../app/store';
+import { api_url } from "../../config/config";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { showToast } from "./ToastUtil"; 
+import { showToast } from "../others/ToastUtil"; 
 
 const ProfileImagePage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

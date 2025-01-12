@@ -7,7 +7,6 @@ import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 // Define your routes
 const router = createBrowserRouter(
   [

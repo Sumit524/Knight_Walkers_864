@@ -1,7 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from .models import UserInfo,UserPreference,UserProfileImage
+from .serializers import UserInfoSerializer,SelectedOptionsSerializer,UserProfileImageSerializer
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import UserInfo
-from .serializers import UserInfoSerializer
+from rest_framework.generics import RetrieveUpdateAPIView
 
 class UserInfoListCreateView(generics.ListCreateAPIView):
     queryset = UserInfo.objects.all()
@@ -34,11 +38,6 @@ class UserInfoDetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-from rest_framework import status, views
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .models import UserPreference
-from .serializers import SelectedOptionsSerializer
 
 class SelectPreferenceCreateView(generics.ListCreateAPIView):
     queryset = UserPreference.objects.all()
@@ -70,7 +69,6 @@ class SelectPreferenceCreateView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-from django.shortcuts import get_object_or_404
 
 class SelectPreferenceDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserPreference.objects.all()
@@ -89,12 +87,6 @@ class SelectPreferenceDetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from .models import UserProfileImage
-from .serializers import UserProfileImageSerializer
 
 class UserProfileImageView(RetrieveUpdateAPIView):
     queryset = UserProfileImage.objects.all()
@@ -106,7 +98,7 @@ class UserProfileImageView(RetrieveUpdateAPIView):
         # Ensure the profile is tied to the authenticated user
         profile, created = UserProfileImage.objects.get_or_create(user=self.request.user)
         return profile
-    
+        
     
 
     def put(self, request, *args, **kwargs):

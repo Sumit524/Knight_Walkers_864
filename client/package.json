@@ -12,7 +12,11 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.3.0",
+    "@tsparticles/engine": "^3.7.1",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.7.1",
     "axios": "^1.7.7",
+    "fireworks-js": "^2.10.8",
     "jwt-decode": "^4.0.0",
     "mapbox-gl": "^3.9.1",
     "react": "^18.3.1",

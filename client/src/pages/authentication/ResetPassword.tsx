@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {useNavigate} from "react-router-dom";
 import { useDispatch} from "react-redux";
-import { AppDispatch } from "../app/store";
-import { reset_password } from "../feature/auth/authActions";
+import { AppDispatch } from "../../app/store";
+import { reset_password } from "../../feature/auth/authActions";
 
 interface FormType{
     email: string;

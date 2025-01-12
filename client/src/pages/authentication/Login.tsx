@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link} from "react-router-dom";
 import { useDispatch} from "react-redux";
-import { AppDispatch } from "../app/store";
-import { login } from "../feature/auth/authActions";
+import { AppDispatch } from "../../app/store";
+import { login } from "../../feature/auth/authActions";
 // import { showToast } from "./ToastUtil"; 
 
 interface FormType{
