@@ -75,6 +75,7 @@ const ProfileImagePage: React.FC = () => {
       <div className="text-center  bg-transparent ">
         {profileImage ? (
           <>
+          
                     <h1 className=" text-2xl  text-center mb-4  text-red-600 ">User Profile Image</h1>
 
             <img

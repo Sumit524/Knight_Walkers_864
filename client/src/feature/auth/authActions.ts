@@ -263,66 +263,229 @@ export const load_user_profile= createAsyncThunk(
 );
 
 
-interface CreateProfilePayload{
-    email: string;
-    first_name: string;
-    last_name: string;
-    gender: string;
-    dob:string;
-    contact: string;
-    address: string;
-    about: string;
-    
+
+
+
+
+
+
+
+
+
+
+
+
+export const load_user_profile_by_id = createAsyncThunk(
+  'auth/load_user_profile',
+  async (userId: number, { dispatch, rejectWithValue }) => {
+    const accessToken = localStorage.getItem('access');
+
+    if (!accessToken) {
+      dispatch(profileLoadedFailed());
+      return rejectWithValue('Access token not found');
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `JWT ${accessToken}`,
+        Accept: 'application/json',
+      },
+    };
+
+    try {
+      // Use userKey in the URL as the parameter
+      const response = await axios.get(`${api_url}/accounts/userinfo/${userId}/`, config);
+      console.log("response inside load_user_profile_by_id", response.data)
+      dispatch(profileLoadedSuccess(response.data));
+      return response.data; // Data returned to the `fulfilled` state
+    } catch (error: any) {
+      console.error('Error loading user profile:', error);
+
+      // Use error.response.data if API provides detailed error messages
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+
+      // Fallback error message
+      return rejectWithValue('An error occurred while loading the user profile');
+    }
+  }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+interface CreateProfilePayload {
+  about: string;
+  address: string;
+  dob: string;
+  contact: string;
+  first_name: string;
+  last_name: string;
+  gender: string;
 }
 
 
 
+// export const CreateProfile = createAsyncThunk(
+//   'auth/createprofile',
+//   async (
+//     { about, address, dob, contact, first_name, last_name, gender }: CreateProfilePayload,
+//     { dispatch, rejectWithValue }
+//   ) => {
+//     try {
+//       const formData = new FormData();
+//       formData.append('first_name', first_name);
+//       formData.append('last_name', last_name);
+//       formData.append('dob', dob);
+//       formData.append('gender', gender);
+//       formData.append('contact', contact);
+//       formData.append('address', address);
+//       formData.append('about', about);
 
-export const CreateProfile = createAsyncThunk(
-    'auth/createprofile',
-    async ({ email, about, address, dob, contact, first_name, last_name, gender }: CreateProfilePayload, { dispatch }) => {
-      try {
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('about', about);
-        formData.append('address', address);
-        formData.append('dob', dob);
-        formData.append('contact', contact);
-        formData.append('first_name', first_name);
-        formData.append('last_name', last_name);
-        formData.append('gender', gender);
+
+     
+     
+//       const accessToken = localStorage.getItem('access');
+//       if (!accessToken) {
+//         throw new Error('Access token is missing.');
+//       }
+
+//       const config = {
+//         headers: {
+//           'Authorization': `JWT ${accessToken}`,
+//           'Accept': 'application/json',
+//         },
+//       };
+
+//       // Axios handles `Content-Type` automatically for `FormData`
+//       console.log('Data sent by frontend:',formData);
+//       const res = await axios.post(`${api_url}/accounts/userinfo/`, formData, config);
+        
+//       dispatch(PROFILE_SUCCESS(res.data)); // Dispatch success action
+//       return res.data;
+//     } catch (error: unknown) {
+//       if (error instanceof AxiosError) {
+//         const errorMessage =
+//           error.response?.data?.message || 'Failed to create profile. Please try again.';
+//         dispatch(PROFILE_FAIL(errorMessage)); // Dispatch fail action
+//         return rejectWithValue(errorMessage);
+//       } else {
+//         const genericError = 'Unexpected error occurred. Please try again later.';
+//         dispatch(PROFILE_FAIL(genericError)); // Dispatch fail action
+//         return rejectWithValue(genericError);
+//       }
+//     }
+//   }
+// );
+
+
+
   
-        // Get token from localStorage
+
+  // Define the payload type
+  import { RootState } from "../../app/store";
+  export const CreateProfile = createAsyncThunk(
+    'auth/createprofile',
+    async (
+      { about, address, dob, contact, first_name, last_name, gender }: CreateProfilePayload,
+      { dispatch, rejectWithValue, getState }
+    ) => {
+      try {
+        const state = getState() as RootState; // Type-cast it to RootState
+  
+        if (!state || !state.auth || !state.auth.user) {
+          return rejectWithValue('User is not logged in or user data is missing.');
+        }
+  
+        const userId = state.auth.user.id;
+  
+        if (!userId) {
+          return rejectWithValue('User ID is required.');
+        }
+  
+        // Create the payload with the user ID and profile data
+        const payload = {
+          user: userId, // Add user ID to the payload
+          about,
+          address,
+          dob,
+          contact,
+          first_name,
+          last_name,
+          gender,
+        };
+  
+        console.log('Data sent by frontend:', payload);
+  
+        // Get token from localStorage (or from Redux store if it's stored there)
+        const accessToken = localStorage.getItem('access');
+        if (!accessToken) {
+          throw new Error('Access token is missing.');
+        }
+  
         const config = {
           headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `JWT ${localStorage.getItem('access')}`,
-                    'Accept': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `JWT ${accessToken}`,
+            'Accept': 'application/json',
           },
         };
   
-        const res = await axios.post(`${api_url}/accounts/userinfo/`, formData, config);
+        // Send the request to the backend
+        const res = await axios.post(`${api_url}/accounts/userinfo/`, payload, config);
   
-        dispatch(PROFILE_SUCCESS(res.data));
+        dispatch(PROFILE_SUCCESS(res.data)); // Dispatch success action
         return res.data;
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          dispatch(PROFILE_FAIL(error.response?.data.message || 'Failed to create profile'));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const errorMessage =
+            error.response?.data?.message || 'Failed to create profile. Please try again.';
+          dispatch(PROFILE_FAIL(errorMessage)); // Dispatch fail action
+          return rejectWithValue(errorMessage);
         } else {
-          dispatch(PROFILE_FAIL('Unexpected error occurred'));
+          const genericError = 'Unexpected error occurred. Please try again later.';
+          dispatch(PROFILE_FAIL(genericError)); // Dispatch fail action
+          return rejectWithValue(genericError);
         }
-        throw error;
       }
     }
   );
+  
+
+
+
+
+
+
+
+
+
 
   import { AxiosError } from 'axios';
 
 
 // Define the type for profile data
 interface UpdateProfilePayload {
-  id: number; // Profile ID (user's primary key)
-  email: string;
   first_name: string;
   last_name: string;
   gender: string;
@@ -332,9 +495,16 @@ interface UpdateProfilePayload {
   address: string;
 }
 
-export const UpdateProfile = createAsyncThunk(
+
+
+
+export const UpdateProfile = createAsyncThunk<
+  any, // Replace with the expected response type
+  { userId: number; profileData: UpdateProfilePayload }, // Payload type
+  { rejectValue: string } // Rejection value type
+>(
   'auth/updateProfile',
-  async (profileData: UpdateProfilePayload, { rejectWithValue }) => {
+  async ({ userId, profileData }, { rejectWithValue }) => {
     try {
       // Ensure the access token exists before making the request
       const accessToken = localStorage.getItem('access');
@@ -342,38 +512,37 @@ export const UpdateProfile = createAsyncThunk(
         return rejectWithValue('Access token is missing.');
       }
 
-      // PUT request to update the user profile using the dynamic user ID
+      // Configure the request headers
       const config = {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `JWT ${accessToken}`,
-          'Accept': 'application/json',
+          Authorization: `JWT ${accessToken}`,
+          Accept: 'application/json',
         },
       };
 
-      const response = await axios.put(`${api_url}/accounts/userinfo/${profileData.id}/`, profileData, config);
-      
+      // PUT request to update the user profile
+      const response = await axios.put(
+        `${api_url}/accounts/userinfo/${userId}/`,
+        profileData,
+        config
+      );
 
       // Return the updated profile data on success
       return response.data;
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        // Log the error response, status, and message
-        console.error('Axios error response:', error.response);
-        console.error('Error status:', error.response?.status);
-        console.error('Error message:', error.message);
+        console.error('Axios error:', error.response);
 
-        // Provide a more descriptive error message based on the response
+        // Extract a detailed error message if available
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data ||
           'An error occurred while updating the profile.';
-        
-        // Reject the promise with the error message
+
         return rejectWithValue(errorMessage);
       }
 
-      // Log any unknown error
       console.error('Unknown error:', error);
 
       // Return a generic error message for unknown errors
@@ -597,6 +766,31 @@ export const fetchUserProfileImage = createAsyncThunk(
       return response.data;  // Ensure that the response data includes the profile_image_url
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'Something went wrong!');
+    }
+  }
+);
+
+
+export const fetchUserProfileImageByID = createAsyncThunk(
+  'profile/fetchProfileImage',
+  async (id: number, { rejectWithValue }) => {
+    const accessToken = localStorage.getItem('access');
+    if (!accessToken) {
+      return rejectWithValue('Access token is missing.');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+      },
+    };
+
+    try {
+      const response = await axios.get(`${api_url}/accounts/profileImage/${id}/`, config);
+      return response.data;  // Ensure that the response data includes the profile image URL
+    } catch (error: any) {
+      // In case the error does not contain a response, handle it gracefully
+      return rejectWithValue(error.response?.data || error.message || 'Something went wrong!');
     }
   }
 );

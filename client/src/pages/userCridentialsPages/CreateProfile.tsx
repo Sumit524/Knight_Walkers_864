@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { load_user, load_user_profile, UpdateProfile,Load_UserPreferences } from "../../feature/auth/authActions";
+import { load_user,  load_user_profile_by_id, UpdateProfile,Load_UserPreferences } from "../../feature/auth/authActions";
 import { AppDispatch, RootState } from "../../app/store";
 import { CreateProfile } from "../../feature/auth/authActions";
 // import { ToastContainer } from "react-toastify";
 import { showToast } from "../others/ToastUtil"; 
 
 interface ProfileForm {
-  email: string;
+ 
   first_name: string;
   last_name: string;
   gender: string;
@@ -19,8 +19,6 @@ interface ProfileForm {
 }
 
 interface UserProfile {
-  id: number;
-  email: string;
   first_name: string;
   last_name: string;
   gender: string;
@@ -39,7 +37,7 @@ const CreateUserProfile: React.FC = () => {
   const [filteredProfile, setFilteredProfile] = useState<UserProfile | null>(null);
   const [uemail, setUemail] = useState<string>("");
   const [profileData, setProfileData] = useState<ProfileForm>({
-    email: uemail,
+   
     first_name: "",
     last_name: "",
     gender: "",
@@ -58,6 +56,8 @@ const CreateUserProfile: React.FC = () => {
     useEffect(() => {
       if (typeof id === 'number') {
         dispatch(Load_UserPreferences(id));
+        dispatch(load_user_profile_by_id(id));
+
       }
     }, [dispatch, id]);
 
@@ -71,16 +71,25 @@ const CreateUserProfile: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
   useEffect(() => {
     dispatch(load_user());
-    dispatch(load_user_profile());
   }, [dispatch]);
 
+
+
+  // console.log("data inside profile", profile);
+  
+
   useEffect(() => {
-    if (user && Array.isArray(profile)) {
-      const matchedProfile = profile.find((p: UserProfile) => p.email === user.email);
-      setFilteredProfile(matchedProfile || null);
+    if(profile){
+      const matchedProfile = profile;
+      setFilteredProfile(matchedProfile|| null);
       setUemail(user?.email || "");
     }
+    
   }, [user, profile]);
+
+
+
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
@@ -88,21 +97,35 @@ const CreateUserProfile: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const profilePayload = { ...profileData, email: uemail };
+    const profilePayload = { ...profileData};
+    console.log("sending profile payload is: -> ",profilePayload)
     dispatch(CreateProfile(profilePayload));
     showToast("success", "Profile Created successfully");
-    window.location.reload(); 
+    // window.location.reload(); 
     // navigate("/profile");
   };
 
 
 
+
+
+  
+
+
+
+
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault();
+  
+    // Ensure profile data and user ID exist
+    if (!user?.id) {
+      showToast("error", "User ID is missing. Unable to update profile.");
+      console.error("User ID is missing. Unable to update profile.");
+      return;
+    }
+  
     if (filteredProfile) {
-      const profileUpdatePayload = { 
-        id: filteredProfile.id,  
-        email: uemail, 
+      const profileUpdatePayload = {
         first_name: filteredProfile.first_name,
         last_name: filteredProfile.last_name,
         gender: filteredProfile.gender,
@@ -110,29 +133,36 @@ const CreateUserProfile: React.FC = () => {
         dob: filteredProfile.dob,
         address: filteredProfile.address,
         about: filteredProfile.about,
+        user:user.id
       };
-
-      // console.log("Sending update profile request with payload:", profileUpdatePayload);
-       
-      dispatch(UpdateProfile(profileUpdatePayload))
+  
+      // Convert user.id to a number if necessary
+      const userId = typeof user.id === "string" ? parseInt(user.id, 10) : user.id;
+  
+      // Dispatch the update profile action
+      dispatch(UpdateProfile({ userId, profileData: profileUpdatePayload }))
         .unwrap()
         .then((response) => {
-          // console.log("Profile updated successfully:", response);
-          setShowUpdateModal(false);
+          console.log("Profile updated successfully:", response);
+          setShowUpdateModal(false); // Close the modal
           showToast("success", "Profile updated successfully");
+          // Optionally navigate to another page
           // navigate("/profile");
         })
         .catch((error) => {
-          showToast("error", "Error updating profile:");
-
           console.error("Error updating profile:", error);
+          showToast("error", `Error updating profile: ${error}`);
         });
     } else {
       showToast("error", "Profile data is unavailable for update.");
-
       console.error("Profile data is unavailable for update.");
     }
   };
+  
+
+
+
+
 
 
 
@@ -149,11 +179,14 @@ const CreateUserProfile: React.FC = () => {
           <h1 className=" text-2xl text-center mb-4  text-red-600 ">User Profile</h1>
           <ul className="space-y-2 mb-6">
   <li className="break-words">
-    <strong className="text-red-700 block break-words">Email:</strong> {filteredProfile.email}
+    <strong className="text-red-700 block break-words">Id</strong> {user?.id}
   </li>
   <li className="break-words">
-    <strong className="text-red-700">ID:</strong> {filteredProfile.id}
+    <strong className="text-red-700 block break-words">Email:</strong> {user?.email}
   </li>
+  {/* <li className="break-words">
+    <strong className="text-red-700">ID:</strong> {filteredProfile.id}
+  </li> */}
   <li className="break-words">
     <strong className="text-red-700">First Name:</strong> {filteredProfile.first_name}
   </li>
@@ -214,20 +247,7 @@ const CreateUserProfile: React.FC = () => {
               className="space-y-6 max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-6"
             >
               {/* Email */}
-              <div className="relative col-span-2">
-                <input
-                  type="email"
-                  name="email"
-                  value={uemail}
-                  readOnly
-                  placeholder=" "
-                  className="peer w-full px-3 pt-6 pb-2 border rounded-md bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  required
-                />
-                <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500">
-                  Email
-                </label>
-              </div>
+              
 
               {/* First Name */}
               <div className="relative">

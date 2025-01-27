@@ -1,4 +1,4 @@
-import React, { Fragment, useState, ReactNode } from "react";
+import React, { Fragment, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../app/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -107,6 +107,21 @@ const Navbar: React.FC = () => {
                             API Testing
                         </Link>
                     </li>
+
+
+                    <li>
+                        <Link
+                            to="/matchuser"
+                            className={`flex items-center px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
+                                activeLink === "apitesting" ? "bg-yellow-500 text-black rounded-lg" : ""
+                            }`}
+                            onClick={() => handleLinkClick("matchuser")}
+                        >
+                            <FaSearch size={20} className="mr-2" />
+                            matchuser
+                        </Link>
+                    </li>
+                    {/* /matchuser */}
                     <li>
                         <Link
                             to="/chatroom"

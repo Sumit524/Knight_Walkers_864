@@ -65,7 +65,7 @@ class UserInfo(models.Model):
         ('Female', 'Female'),
         ('Other', 'Other'),
     )
-    email =models.CharField(max_length=200)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
@@ -79,6 +79,10 @@ class UserInfo(models.Model):
     
 
 
+
+
+
+    
 
 
 
@@ -100,3 +104,23 @@ class UserProfileImage(models.Model):
 
     def __str__(self):
         return f"{self.user.email}'s Profile"
+    
+
+
+
+
+
+class Experience(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name="experiences")
+    message_id = models.AutoField(primary_key=True)  # Unique ID for each experience
+    time = models.DateTimeField(auto_now_add=True)  # Timestamp when the experience is shared
+    category = models.CharField(max_length=100)  # Example: Travel, Work, etc.
+    place = models.CharField(max_length=200)  # Location of the experience
+    message_description = models.TextField()  # Description of the experience
+    stars = models.PositiveSmallIntegerField(
+        choices=[(i, f"{i} Stars") for i in range(1, 6)], default=5
+    )  # Rating between 1 to 5
+
+    def __str__(self):
+     return f"Experience shared by {self.user.name} regarding {self.place}"
+

@@ -1,19 +1,110 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from .models import UserInfo,UserPreference,UserProfileImage
+from .models import UserInfo,UserPreference,UserProfileImage,Experience
 from .serializers import UserInfoSerializer,SelectedOptionsSerializer,UserProfileImageSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveUpdateAPIView
 
+# class UserInfoListCreateView(generics.ListCreateAPIView):
+#     queryset = UserInfo.objects.all()
+#     serializer_class = UserInfoSerializer
+#     permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
+
+#     def perform_create(self, serializer):
+#         serializer.save()
+
+
+# UserInfoListCreateView
+
+
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import ExperienceSummarySerializer
+from .models import Experience
+from .serializers import ExperienceSummarySerializer
+
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import ExperienceSummarySerializer
+from .models import Experience
+
+class ExperienceView(APIView):
+    def get(self, request, *args, **kwargs):
+        """Fetch all experiences or filter based on user."""
+        user = request.query_params.get("user")  # Optional filtering by user
+        if user:
+            experiences = Experience.objects.filter(user=user)
+        else:
+            experiences = Experience.objects.all()
+        serializer = ExperienceSummarySerializer(experiences, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        """Create a new experience."""
+        serializer = ExperienceSummarySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, *args, **kwargs):
+        """Update an existing experience by primary key."""
+        try:
+            experience = Experience.objects.get(pk=pk)
+        except Experience.DoesNotExist:
+            return Response({"error": "Experience not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ExperienceSummarySerializer(experience, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserInfoListCreateView(generics.ListCreateAPIView):
     queryset = UserInfo.objects.all()
     serializer_class = UserInfoSerializer
     permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
 
-    def perform_create(self, serializer):
-        serializer.save()
+    def post(self, request, *args, **kwargs):
+        # Extract data from the request
+        user_data = request.data
+
+
+        print("DFdsfdsfdsddsdsdsdfsdd->>>>>>       ")
+       
+
+        # Validate that the data is in the correct format (if needed)
+        if not isinstance(user_data, dict):
+            return Response(
+                {"error": "Invalid data format. The request body should be a dictionary."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Check if the user already has an entry
+        try:
+            user_info_instance = UserInfo.objects.get(user=request.user)
+            # Update the existing entry
+            serializer = self.get_serializer(user_info_instance, data=user_data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        except UserInfo.DoesNotExist:
+            # Create a new entry
+            serializer = self.get_serializer(data=user_data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=request.user)
+
+        # Return the serialized data for the updated or newly created instance
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 
@@ -125,12 +216,28 @@ class UserProfileImageDetailView(APIView):
         profile, created = UserProfileImage.objects.get_or_create(user=request.user)
         serializer = UserProfileImageSerializer(profile)
         return Response(serializer.data)
+    
 
 
 
 
+# import 
+from rest_framework.exceptions import NotFound
+
+class UserProfileImageDetailByIdView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):  # Use 'pk' to match the URL pattern
+        try:
+            profile = UserProfileImage.objects.get(user_id=pk)
+        except UserProfileImage.DoesNotExist:
+            raise NotFound({"error": "User profile image not found."})
+        
+        serializer = UserProfileImageSerializer(profile)
+        return Response(serializer.data)
 
 
+    
 
 
 

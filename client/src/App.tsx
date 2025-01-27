@@ -22,6 +22,7 @@ import ProfileImage from "./pages/userCridentialsPages/ProfileImage";
 import UserDetailsPage from "./pages/userCridentialsPages/UserDetailsPage";
 import 'react-toastify/dist/ReactToastify.css';
 import Api from './pages/userCridentialsPages/ApiPage'
+import Matchuser from './pages/userCridentialsPages/MatchUser'
 
 const App: React.FC = () => {
   const auth = useSelector((state:RootState) => (state.auth))
@@ -59,6 +60,8 @@ const App: React.FC = () => {
             <></>
            
           <Route path="/userdetails" element={< UserDetailsPage/>} />
+          <Route path="/matchuser" element={< Matchuser/>} />
+
 
           <Route path="/profileImage" element={<ProfileImage/>} />
           

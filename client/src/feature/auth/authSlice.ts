@@ -12,7 +12,19 @@ interface User {
 
 
 interface UserProfile {
-    email: string;
+    first_name: string;
+    last_name: string;
+    gender: string;
+    dob: string;
+    contact: string;
+    address: string;
+    about: string;
+}
+
+
+
+interface UserProfiletemp {
+    
     first_name: string;
     last_name: string;
     gender: string;
@@ -28,9 +40,11 @@ interface AuthState {
     refresh: string | null;
     isAuthenticated: boolean | null;
     user: User | null;
+    
     profile: UserProfile | null; 
     preferences:UserPreferencesInterface |null,
     loading: boolean;
+
     error: string | null;
     success:boolean
     profileImage: string | null; // Or any other relevant property
@@ -44,6 +58,7 @@ const initialState: AuthState = {
     profileImage: null,
     status: 'idle',
     user: null,
+   
     profile: null,
     preferences:null,
     loading: false,
@@ -82,6 +97,7 @@ export const authSlice = createSlice({
         },
 
         profileLoadedSuccess(state, action: PayloadAction<UserProfile>) {
+            console.log("recived data-100,  ",action.payload)
             state.profile = action.payload;
         },
         profileLoadedFailed(state) {
