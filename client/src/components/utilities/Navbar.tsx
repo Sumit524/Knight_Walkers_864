@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../feature/auth/authActions";
-import { FaRegComments,FaUserAlt,FaUserCircle,FaSearch ,FaSignOutAlt } from 'react-icons/fa';
+import { FaRegComments,FaUserAlt,FaUserCircle,FaSearch ,FaSignOutAlt,FaInfoCircle } from 'react-icons/fa';
 
 
 
@@ -104,21 +104,21 @@ const Navbar: React.FC = () => {
                             onClick={() => handleLinkClick("apitesting")}
                         >
                             <FaSearch size={20} className="mr-2" />
-                            API Testing
+                            Search About Prefences
                         </Link>
                     </li>
 
 
                     <li>
                         <Link
-                            to="/matchuser"
+                            to="/experiences"
                             className={`flex items-center px-2 py-1 text-aqua font-bold hover:text-gray-300 ${
-                                activeLink === "apitesting" ? "bg-yellow-500 text-black rounded-lg" : ""
+                                activeLink === "Experiences" ? "bg-yellow-500 text-black rounded-lg" : ""
                             }`}
-                            onClick={() => handleLinkClick("matchuser")}
+                            onClick={() => handleLinkClick("Experiences")}
                         >
-                            <FaSearch size={20} className="mr-2" />
-                            matchuser
+                            <FaInfoCircle size={20} className="mr-2" />
+                            Experiences
                         </Link>
                     </li>
                     {/* /matchuser */}

@@ -3,6 +3,7 @@
 
 ### Django ###
 README.md
+node_modules
 *.log
 *.pot
 *.pyc

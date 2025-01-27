@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate, } from "react-router-dom";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 import Navbar from "./components/utilities/Navbar";
 import NotFound from "./pages/others/NotFound";
 import Home from "./pages/authentication/Home";
@@ -22,7 +25,7 @@ import ProfileImage from "./pages/userCridentialsPages/ProfileImage";
 import UserDetailsPage from "./pages/userCridentialsPages/UserDetailsPage";
 import 'react-toastify/dist/ReactToastify.css';
 import Api from './pages/userCridentialsPages/ApiPage'
-import Matchuser from './pages/userCridentialsPages/MatchUser'
+import UserExperiences from './pages/userCridentialsPages/UserExperiences'
 
 const App: React.FC = () => {
   const auth = useSelector((state:RootState) => (state.auth))
@@ -60,7 +63,7 @@ const App: React.FC = () => {
             <></>
            
           <Route path="/userdetails" element={< UserDetailsPage/>} />
-          <Route path="/matchuser" element={< Matchuser/>} />
+          <Route path="/experiences" element={< UserExperiences/>} />
 
 
           <Route path="/profileImage" element={<ProfileImage/>} />

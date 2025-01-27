@@ -8,6 +8,13 @@ interface User {
     
 }
 
+interface Experience{
+ category:string;
+ place:string;
+ message_description:string;
+ stars:number;
+}
+
 
 
 
@@ -42,6 +49,7 @@ interface AuthState {
     user: User | null;
     
     profile: UserProfile | null; 
+    experience: Experience | null;
     preferences:UserPreferencesInterface |null,
     loading: boolean;
 
@@ -58,6 +66,7 @@ const initialState: AuthState = {
     profileImage: null,
     status: 'idle',
     user: null,
+    experience:null,
    
     profile: null,
     preferences:null,
@@ -124,6 +133,20 @@ export const authSlice = createSlice({
       state.profileImage = action.payload;
       state.error = null;
           },
+
+        USER_EXPERIENCE_SUCCESS: (state, action: PayloadAction<Experience>) => {
+            state.status = 'succeeded';
+            state.experience = action.payload;
+            state.error =null
+
+
+        },
+        USER_EXPERIENCE_FAILED: (state) => {
+           state.status='failed';
+           state.experience = null;
+           state.error = 'Failed to load user experience';
+
+        },
         
         
 
@@ -256,10 +279,12 @@ export const authSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.payload;
               });
+              
+              
           
     },
 })
 
 export const { LOGIN_SUCCESS, LOGIN_FAIL,     profileLoadedSuccess, profileIamgeLoadedSuccess,profileImageLoadedFailed,
-    resetState, profileLoadedFailed,SIGNUP_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess, SIGNUP_FAIL,PROFILE_SUCCESS, PROFILE_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL, USER_LOADED_FAILED, USER_LOADED_SUCCESS, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, PASSWORD_RESET_FAIL, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS,LOGOUT } = authSlice.actions;
+    resetState, profileLoadedFailed,SIGNUP_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess, SIGNUP_FAIL,PROFILE_SUCCESS, PROFILE_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL, USER_LOADED_FAILED, USER_LOADED_SUCCESS, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, PASSWORD_RESET_FAIL, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS,LOGOUT,USER_EXPERIENCE_FAILED,USER_EXPERIENCE_SUCCESS } = authSlice.actions;
 export default authSlice.reducer;

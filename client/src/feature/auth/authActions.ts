@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, {AxiosResponse} from 'axios';
-import { LOGIN_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess,profileLoadedSuccess,profileLoadedFailed, PROFILE_SUCCESS,PROFILE_FAIL,LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAILED, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, LOGOUT, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, SIGNUP_SUCCESS, SIGNUP_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL,profileIamgeLoadedSuccess,profileImageLoadedFailed} from "./authSlice";
+import { LOGIN_SUCCESS,preferencesLoadedFailed,preferencesLoadedSuccess,profileLoadedSuccess,profileLoadedFailed, PROFILE_SUCCESS,PROFILE_FAIL,LOGIN_FAIL, USER_LOADED_SUCCESS, USER_LOADED_FAILED, AUTHENTICATED_SUCCESS, AUTHENTICATED_FAILED, LOGOUT, PASSWORD_RESET_SUCCESS, PASSWORD_RESET_FAIL, PASSWORD_RESET_CONFIRM_SUCCESS, PASSWORD_RESET_CONFIRM_FAIL, SIGNUP_SUCCESS, SIGNUP_FAIL, ACTIVATION_SUCCESS, ACTIVATION_FAIL,profileIamgeLoadedSuccess,profileImageLoadedFailed,USER_EXPERIENCE_FAILED,USER_EXPERIENCE_SUCCESS} from "./authSlice";
 import { api_url } from "../../config/config";
 
 interface LoginPayload {
@@ -343,6 +343,117 @@ interface CreateProfilePayload {
   last_name: string;
   gender: string;
 }
+
+interface UserExperience {
+  category: string;
+  place: string;
+  message_description: string;
+  stars: number;
+}
+
+export const CreateUserExperience = createAsyncThunk(
+  'auth/experience',
+  async (
+    { category, place, message_description, stars }: UserExperience,
+    { getState, rejectWithValue }
+  ) => {
+    try {
+      // Retrieve the access token
+      const accessToken = localStorage.getItem('access');
+      if (!accessToken) {
+        return rejectWithValue('Access token is missing.');
+      }
+
+      // Get the user ID from the state
+      const state = getState() as RootState;
+      const userId = state?.auth?.user?.id;
+      if (!userId) {
+        return rejectWithValue('User is not logged in or user ID is missing.');
+      }
+
+      // Configuration for the request
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${accessToken}`,
+          Accept: 'application/json',
+        },
+      };
+
+      // Request payload
+      const payload = {
+        user: userId,
+        category,
+        place,
+        message_description,
+        stars,
+      };
+
+      // API call
+      const response = await axios.post(`${api_url}/accounts/experience/`, payload, config);
+      return response.data; // Return the response data for the `fulfilled` case
+    } catch (error: any) {
+      // Handle errors consistently
+      if (error.response && error.response.data) {
+        return rejectWithValue(
+          error.response.data.message || 'Failed to create user experience.'
+        );
+      }
+      return rejectWithValue('An unexpected error occurred. Please try again later.');
+    }
+  }
+);
+
+
+
+
+
+
+
+
+
+export const GetUserExperience = createAsyncThunk(
+  'auth/experience',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      // Retrieve the access token
+      const accessToken = localStorage.getItem('access');
+      if (!accessToken) {
+        return rejectWithValue('Access token is missing.');
+      }
+
+      // Configuration for the request
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${accessToken}`,
+          Accept: 'application/json',
+        },
+      };
+
+      // API call
+      const response = await axios.get(`${api_url}/accounts/experience/`, config);
+
+      // Dispatching success action
+      dispatch(USER_EXPERIENCE_SUCCESS(response.data));
+
+      // Returning the response data
+      return response.data;
+    } catch (error: any) {
+      // Dispatching failure action and returning error message
+      dispatch(USER_EXPERIENCE_FAILED());
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data.message || 'Failed to load user experience.');
+      }
+      return rejectWithValue('An unexpected error occurred. Please try again later.');
+    }
+  }
+);
+
+
+
+
+
 
 
 
